@@ -1,11 +1,21 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { authClient } from "#/lib/auth-client";
 import { useAdminUsers, useSessionQuery } from "#/lib/api";
+import { getRequestUser, isAdminUser } from "#/lib/auth-server";
 import { AppShell } from "#/components/app-shell";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "#/components/ui/card";
 
-export const Route = createFileRoute("/admin")({ component: Admin });
+export const Route = createFileRoute("/admin")({
+  // Redirect to /login on the server before render — previously an anonymous
+  // visit rendered the page (200) and only the data API 403'd.
+  beforeLoad: async () => {
+    const user = await getRequestUser();
+    if (!user) throw redirect({ to: "/login" });
+    return { isAdmin: isAdminUser(user) };
+  },
+  component: Admin,
+});
 
 function Badge({ children, tone = "neutral" }: { children: string; tone?: "neutral" | "accent" }) {
   const styles =
@@ -25,7 +35,10 @@ function Admin() {
   const navigate = useNavigate();
   const { data: session, isPending } = authClient.useSession();
   const { data: sessionInfo } = useSessionQuery();
-  const isAdmin = sessionInfo?.isAdmin ?? false;
+  // Prefer the server-resolved role from beforeLoad; fall back to the client
+  // session query for client-side navigations.
+  const { isAdmin: serverIsAdmin } = Route.useRouteContext();
+  const isAdmin = serverIsAdmin ?? sessionInfo?.isAdmin ?? false;
   const { data, isLoading, error } = useAdminUsers(isAdmin);
 
   useEffect(() => {
@@ -45,7 +58,7 @@ function Admin() {
   }
 
   return (
-    <AppShell active="admin" title="Admin" email={session.user.email}>
+    <AppShell active="admin" title="Admin" email={session.user.email} isAdmin={isAdmin}>
       <div className="flex items-end justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-ink-1">Users</h1>

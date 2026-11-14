@@ -26,14 +26,20 @@ export function AppShell({
   active,
   title,
   email,
+  isAdmin = false,
   children,
 }: {
   active: Section;
   title: string;
   email: string;
+  /** Hide the Admin nav entry for non-admin accounts. */
+  isAdmin?: boolean;
   children: ReactNode;
 }) {
   const navigate = useNavigate();
+  // Non-admins never see the Admin rail entry (the API still 403s regardless —
+  // this is about not surfacing a dead-end link).
+  const navItems = NAV_ITEMS.filter((i) => i.key !== "admin" || isAdmin);
 
   async function logout() {
     await authClient.signOut();
@@ -51,7 +57,7 @@ export function AppShell({
             </Link>
           </div>
           <nav className="flex-1 space-y-1 px-3 py-4">
-            {NAV_ITEMS.map((item) =>
+            {navItems.map((item) =>
               item.key === active ? (
                 <div
                   key={item.key}
