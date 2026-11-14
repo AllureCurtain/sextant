@@ -23,7 +23,7 @@ Build Sextant into a working, open-source, Cloudflare-native template for outbou
 
 ## 4. Stack (TypeScript everywhere)
 
-- Language: TypeScript, strict mode. Package manager: pnpm workspaces (unless the forked base already uses another manager — never mix two). Runtime: Node 22 LTS or newer.
+- Language: TypeScript, strict mode. Package manager: pnpm workspaces. Runtime: Node 22 LTS or newer.
 - Runtime: Cloudflare Workers, deployed with Wrangler. Node APIs only where Workers supports them.
 - Content: Astro (latest stable) + `@astrojs/cloudflare` adapter. Content collections for pages. Content search: Pagefind (build-time, no backend).
 - SaaS: TanStack Start + Hono, React 19, TanStack Router.
@@ -40,12 +40,13 @@ Build Sextant into a working, open-source, Cloudflare-native template for outbou
 - Lint/format: ESLint (flat config) + Prettier.
 - CI: GitHub Actions — typecheck + build on every PR; deploy to Workers on push to main; verify the deployed URL returns 200 after each deploy.
 
-## 5. Bases to reuse (read first, then decide)
+## 5. Start from official starters only (no third-party template)
 
-- SaaS app structure: johanguse/cloudflare-fullstack-boilerplate (MIT) — Hono + React SPA + D1/Drizzle + Better Auth + Stripe + Trigger.dev + Cloudflare Email. Take its structure and working wiring, not its branding. If its shape fights TanStack Start, prefer the official TanStack Start starter and port the wiring across. Do not adopt Trigger.dev: background jobs are Cloudflare Queues (section 4).
-- Content app: Astro official starter + `@astrojs/cloudflare` docs. No third-party content starter is required.
-- Reference for the one-site-per-keyword pattern: qianshuixia/shrimpreel (Workers + D1/R2/KV/Queues + TanStack Start + Hono + credit packs). Read it for how a keyword-driven site is organized. Do not copy its product (AI video) or its fal.ai integration.
-- Record every reused repo and its license in `THIRD_PARTY_NOTICES.md`.
+- Do not fork, copy, or point to any third-party starter, boilerplate, or reference template. This template is written by us, from the official minimal starters and the libraries' own documentation.
+- Content app: start from the Astro official starter (`npm create astro@latest`) + `@astrojs/cloudflare` docs. Write the content pipeline (keyword table, page generation, SEO/GEO outputs) yourself.
+- SaaS app: start from the official TanStack Start starter (follow the scaffolding command in the TanStack Start documentation at build time). Write the auth, billing, dashboard, and admin wiring yourself, using the Better Auth, Drizzle, and Stripe documentation.
+- Libraries are dependencies, not templates: install Better Auth, Drizzle, Stripe SDK, and the rest as packages and use them as documented. Do not re-implement them. Do not copy code from other people's projects, templates, or example apps.
+- Record every dependency and its license in `THIRD_PARTY_NOTICES.md`. If a library's license is not MIT, Apache-2.0, BSD, or ISC, flag it in the final report and do not use it without noting the exception.
 
 ## 6. Repo layout (target)
 
@@ -143,7 +144,7 @@ sextant/
 - Exact versions installed (every dependency pinned: Astro, TanStack Start, Hono, Better Auth, Drizzle, Stripe SDK, Wrangler, Tailwind, shadcn/ui, Vitest, Playwright, ESLint, Prettier).
 - The two deployed `*.workers.dev` URLs.
 - Each acceptance check from section 7: pass / fail, with the command or URL that proves it.
-- Every reused repo and license.
+- Every dependency and its license.
 - Known limitations and what is intentionally not done.
 
 ## 13. Review

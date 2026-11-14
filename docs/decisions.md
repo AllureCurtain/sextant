@@ -21,4 +21,11 @@ Append-only log. Newest at the bottom. Read this before changing a technology ch
 - Package manager: pnpm workspaces. Runtime: Node 22 LTS or newer.
 - Language of the repo: all English (docs, comments, commits, branches, UI). No Chinese in the repo.
 - i18n: English only in v1. No i18n framework bundled; add when a site needs a second language.
-- Bases: johanguse/cloudflare-fullstack-boilerplate (MIT) for SaaS structure; qianshuixia/shrimpreel as the one-site-per-keyword reference. No paid template code (TanStarter, TanLaunch, ShipKit).
+- No paid template code (TanStarter, TanLaunch, ShipKit).
+
+## 2026-11-14 — No third-party starter or reference template
+
+- Sextant is written by us, from the official minimal starters (Astro, TanStack Start) and the libraries' own documentation. No forked boilerplate, no reference template.
+- Reason: full ownership, no dependency on a small unknown boilerplate, and the build itself is how the stack is learned.
+- Cost: more work for the implementing agent (auth, billing, and dashboard wiring are written from scratch instead of adapted), and a higher chance of small mistakes in that wiring. Mitigation: follow the official docs of Better Auth, Drizzle, and Stripe, and the review checks the acceptance list in PLAN.md section 7.
+- Libraries stay dependencies: Better Auth, Drizzle, Stripe SDK, and the rest are installed as packages and used as documented, not re-implemented.
