@@ -1,6 +1,6 @@
 # Sextant
 
-**Sextant** （六分仪 — the navigator's instrument) is a Cloudflare-native template for building outbound sites fast: one repo, two decoupled apps, shared plumbing.
+**Sextant** — the navigator's instrument — is a Cloudflare-native template for building outbound sites fast: one repo, two decoupled apps, shared plumbing.
 
 - `apps/content` — a content / GEO site (Astro). Hundreds of overview + Q&A pages generated from a keyword table, built for search engines and AI answers (SEO + GEO).
 - `apps/saas` — a SaaS app (TanStack Start). Sign-up, login, Stripe billing, usage credits, admin console.
@@ -25,6 +25,17 @@ Scaffold. The plan is in [`docs/PLAN.md`](docs/PLAN.md); implementation is in pr
 | Payments | Stripe (test mode by default) |
 | Email | Resend (free tier) or Cloudflare Email |
 | Analytics | Cloudflare Web Analytics |
+| Styling | Tailwind CSS v4 |
+| Components | shadcn/ui (SaaS app) |
+| Icons | lucide-react |
+| Forms | React Hook Form + Zod |
+| Server state | TanStack Query |
+| Validation | Zod |
+| Jobs | Cloudflare Queues |
+| Cron | Cloudflare Cron Triggers |
+| Content search | Pagefind |
+| Testing | Vitest + Playwright smoke |
+| Lint/format | ESLint + Prettier |
 | Package manager | pnpm workspaces |
 
 ## Quickstart
@@ -37,7 +48,7 @@ pnpm dev:content   # content site at http://localhost:4321
 pnpm dev:saas      # SaaS app at http://localhost:3000
 ```
 
-Copy `.dev.vars.example` to `.dev.vars` and fill in your own keys. Never commit `.dev.vars`.
+Copy `apps/saas/.dev.vars.example` to `apps/saas/.dev.vars` and fill in your own keys. Never commit `.dev.vars`.
 
 Deploy:
 
@@ -46,7 +57,7 @@ pnpm deploy:content
 pnpm deploy:saas
 ```
 
-Each app has its own `wrangler.toml` and its own D1 database. See `docs/PLAN.md` for the full deploy and environment-variable list.
+Each app has its own `wrangler.toml` and its own D1 database. See `docs/development.md` for the full deploy and environment-variable list.
 
 ## Starting a new site from Sextant
 
@@ -59,8 +70,8 @@ Each app has its own `wrangler.toml` and its own D1 database. See `docs/PLAN.md`
 
 - MIT licensed. Reused open-source code keeps its original LICENSE / NOTICE files.
 - No secrets in the repo. Ever. Keys live in `.dev.vars` (local) and Cloudflare secrets (production).
-- Free tiers only. The template must run without any paid service.
-- English-first: UI, docs, and generated pages are in English.
+- All English: UI, docs, code, comments, and commits are in English.
+- Money and credits are integers in minor units, never floating point.
 
 ## License
 

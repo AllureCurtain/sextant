@@ -18,14 +18,14 @@ Build Sextant into a working, open-source, Cloudflare-native template for outbou
 
 - No real product, no real demand, no real content. Use small sample data (10 sample keywords, 1 sample paid plan) that proves the machinery works.
 - No SandBase Lab content, code, or branding anywhere in this repo.
-- No paid service may be required to run, build, or deploy the template. Stripe stays in test mode. Email uses Resend free tier or Cloudflare Email.
+- Stripe stays in test mode. Email uses Resend free tier or Cloudflare Email. The template is built on services that offer free tiers; a site may move to a paid tier when it outgrows the free one.
 - Do not buy or copy code from paid templates (TanStarter, TanLaunch, ShipKit, or similar). Reuse only MIT / Apache-2.0 open-source code, and keep its LICENSE / NOTICE files.
 
 ## 4. Stack (TypeScript everywhere)
 
-- Language: TypeScript. Package manager: pnpm workspaces (unless the forked base already uses another manager — never mix two).
+- Language: TypeScript, strict mode. Package manager: pnpm workspaces (unless the forked base already uses another manager — never mix two). Runtime: Node 22 LTS or newer.
 - Runtime: Cloudflare Workers, deployed with Wrangler. Node APIs only where Workers supports them.
-- Content: Astro (latest stable) + `@astrojs/cloudflare` adapter. Content collections for pages.
+- Content: Astro (latest stable) + `@astrojs/cloudflare` adapter. Content collections for pages. Content search: Pagefind (build-time, no backend).
 - SaaS: TanStack Start + Hono, React 19, TanStack Router.
 - Database: Cloudflare D1 + Drizzle ORM. Migrations in each app's `drizzle/` directory.
 - Files: Cloudflare R2.
@@ -33,11 +33,16 @@ Build Sextant into a working, open-source, Cloudflare-native template for outbou
 - Payments: Stripe Checkout + Billing + webhooks (test mode). The webhook handler must verify the signature, deduplicate by event id, and translate the event into one internal entitlement change.
 - Email: Resend (free tier) with react-email templates; fall back to Cloudflare Email if Resend is unavailable. Transactional mail only (welcome, receipt, password reset).
 - Analytics: Cloudflare Web Analytics snippet (no cookies, no extra account).
-- CI: GitHub Actions — typecheck + build on every PR; deploy to Workers on push to main.
+- Styling: Tailwind CSS v4. Components: shadcn/ui (SaaS app, Radix primitives). Icons: lucide-react.
+- Forms: React Hook Form + Zod. Server state: TanStack Query. Validation: Zod everywhere.
+- Background jobs: Cloudflare Queues. Scheduled work: Cloudflare Cron Triggers. No extra job vendor in v1.
+- Testing: Vitest (unit) + Playwright smoke (section 7).
+- Lint/format: ESLint (flat config) + Prettier.
+- CI: GitHub Actions — typecheck + build on every PR; deploy to Workers on push to main; verify the deployed URL returns 200 after each deploy.
 
 ## 5. Bases to reuse (read first, then decide)
 
-- SaaS app structure: johanguse/cloudflare-fullstack-boilerplate (MIT) — Hono + React SPA + D1/Drizzle + Better Auth + Stripe + Trigger.dev + Cloudflare Email. Take its structure and working wiring, not its branding. If its shape fights TanStack Start, prefer the official TanStack Start starter and port the wiring across.
+- SaaS app structure: johanguse/cloudflare-fullstack-boilerplate (MIT) — Hono + React SPA + D1/Drizzle + Better Auth + Stripe + Trigger.dev + Cloudflare Email. Take its structure and working wiring, not its branding. If its shape fights TanStack Start, prefer the official TanStack Start starter and port the wiring across. Do not adopt Trigger.dev: background jobs are Cloudflare Queues (section 4).
 - Content app: Astro official starter + `@astrojs/cloudflare` docs. No third-party content starter is required.
 - Reference for the one-site-per-keyword pattern: qianshuixia/shrimpreel (Workers + D1/R2/KV/Queues + TanStack Start + Hono + credit packs). Read it for how a keyword-driven site is organized. Do not copy its product (AI video) or its fal.ai integration.
 - Record every reused repo and its license in `THIRD_PARTY_NOTICES.md`.
@@ -47,19 +52,26 @@ Build Sextant into a working, open-source, Cloudflare-native template for outbou
 ```
 sextant/
   README.md
-  docs/PLAN.md            # this file
-  docs/BUILD-REPORT.md    # written at the end (section 12)
-  AGENTS.md               # instructions for coding agents working in this repo
+  AGENTS.md               # operating manual (standing rules, not a build brief)
+  TODO.md                 # index of open issues, one row each
   THIRD_PARTY_NOTICES.md
-  package.json            # pnpm workspaces
+  package.json            # pnpm workspaces + root scripts (section 11, step 1)
   .github/workflows/ci.yml
+  docs/
+    PLAN.md               # this file
+    BUILD-REPORT.md       # written at the end (section 12)
+    development.md        # commands, env vars, deploy, release
+    decisions.md          # append-only technical decisions
   apps/
     content/              # Astro content / GEO site
+      AGENTS.md           # content-app rules
       src/content/        # page content (collections)
       src/data/keywords.ts  # sample keyword table (10 rows)
       src/lib/geo.ts      # sitemap / llms.txt / FAQ JSON-LD generation
       wrangler.toml
     saas/                 # TanStack Start SaaS app
+      AGENTS.md           # SaaS-app rules
+      .dev.vars.example   # env var names + comments, no values
       src/routes/         # marketing, auth, dashboard, admin, billing
       src/server/         # Hono API, auth, Stripe webhooks
       drizzle/            # D1 migrations
@@ -79,6 +91,7 @@ sextant/
 - Every page: title, meta description, canonical URL, Open Graph tags, FAQ or Article JSON-LD where applicable.
 - Generated at build time: `sitemap.xml`, `robots.txt`, `llms.txt`, `llms-full.txt`.
 - The keyword table is the single source of truth: adding a row adds pages; no hand-written pages for sample content.
+- Same input generates the same pages (deterministic build; no timestamps or random ids in output).
 - One shared layout, fast (no client JS unless a page needs it).
 - Deploy to a `*.workers.dev` URL; all sample pages return 200.
 
@@ -97,7 +110,7 @@ sextant/
 - `packages/analytics`: one snippet/component to drop into both apps.
 - `packages/seo`: functions that generate sitemap entries, llms.txt, and FAQ JSON-LD from a page list. Used by the content app; available to the SaaS app's marketing pages.
 - `packages/deploy`: scripts used by CI for both apps (migrate + deploy).
-- `AGENTS.md` at the root: how to build, test, and deploy; what not to touch; where secrets go.
+- `AGENTS.md` files: root (standing rules), `apps/content/AGENTS.md`, `apps/saas/AGENTS.md`. Keep them current as the code changes; they are the manual the next agent reads first.
 
 ## 9. Environment variables (names, not values)
 
@@ -107,23 +120,27 @@ sextant/
 ## 10. Constraints
 
 - TypeScript, strict mode, no `any` in new code unless a library forces it (note it in a comment).
-- English-first: all UI strings, docs, and sample pages in English.
-- Free tiers only. No service that requires a paid plan to run the template.
+- All English: UI strings, docs, code comments, commit messages, and branch names are in English. No Chinese in the repo.
 - No secrets, tokens, or private keys in the repo, in any file, at any time.
+- Money and credits are always integers in minor units (cents; 1 credit = 1 unit), never floating point.
+- API contract first: Zod schemas + a routes table before handlers. No undocumented endpoint in the SaaS app.
+- Cross-platform: dev scripts are pnpm scripts only; no `.sh`-only or `.bat`-only scripts.
+- Never commit directly on main; main only receives PR merges. Branch names are `<type>/<kebab-case-description>` with types `feat|fix|docs|refactor|test|chore|build|ci|perf`.
+- Documentation is updated in the same PR as the code (see `AGENTS.md` for the per-doc rules).
 - Every dependency must be MIT, Apache-2.0, BSD, or ISC licensed. Record exceptions in THIRD_PARTY_NOTICES.md and flag them in the final report.
 - Pin the exact versions installed and list them in the final report.
 
 ## 11. Build order
 
-1. Monorepo skeleton: workspaces, root scripts, CI, per-app `wrangler.toml`, deploy smoke test (a hello page per app on `*.workers.dev`).
+1. Monorepo skeleton: workspaces, root scripts, CI, per-app `wrangler.toml`, deploy smoke test (a hello page per app on `*.workers.dev`, verified with a 200 response). Root `package.json` defines these scripts: `dev:content`, `dev:saas`, `build`, `build:content`, `build:saas`, `typecheck`, `lint`, `format`, `format:check`, `test`, `test:e2e`, `deploy:content`, `deploy:saas`.
 2. Content app: keyword table, page generation, SEO/GEO outputs, sample build of 100 pages, deploy.
 3. SaaS app: auth, dashboard, credits, Stripe test-mode billing, admin, deploy.
-4. Shared packages + `AGENTS.md` + `THIRD_PARTY_NOTICES.md` + README quickstart verification.
+4. Shared packages + `AGENTS.md` files + `THIRD_PARTY_NOTICES.md` + `docs/development.md` + `docs/decisions.md` + README quickstart verification.
 5. Full verification pass against section 7 + section 10. Fix failures; do not mark the template done with a failing check.
 
 ## 12. Final report (write to docs/BUILD-REPORT.md)
 
-- Exact versions installed (Astro, TanStack Start, Hono, Better Auth, Drizzle, Stripe SDK, Wrangler).
+- Exact versions installed (every dependency pinned: Astro, TanStack Start, Hono, Better Auth, Drizzle, Stripe SDK, Wrangler, Tailwind, shadcn/ui, Vitest, Playwright, ESLint, Prettier).
 - The two deployed `*.workers.dev` URLs.
 - Each acceptance check from section 7: pass / fail, with the command or URL that proves it.
 - Every reused repo and license.
@@ -131,4 +148,14 @@ sextant/
 
 ## 13. Review
 
-After the build, the reviewer checks this repo against this plan. Do not publish or announce the template as finished until the review passes. Do not push anything to any other org or repo.
+After the build, the reviewer checks this repo against this plan and `AGENTS.md`. Do not publish or announce the template as finished until the review passes. Do not push anything to any other org or repo.
+
+## 14. Operating norms after the scaffold
+
+Once the scaffold in this plan is done, work is issue-driven:
+
+- Direction is settled in a GitHub issue first, with completion criteria written down, before touching code. `TODO.md` is the index of open issues, one row each.
+- One PR does one thing: a minimal feature, or the complete closure of one issue. Split unrelated changes.
+- One worktree per task, created from the latest main. Never commit directly on main.
+- Before pushing, run the fast tier for the apps the change touched: `pnpm format:check`, `pnpm lint`, `pnpm typecheck`, `pnpm test` (affected), `pnpm build` (affected app). Never bypass checks.
+- The standing rules live in `AGENTS.md`, not in this plan. This plan describes the one-time scaffold; `AGENTS.md` describes how the repo is operated afterwards.
