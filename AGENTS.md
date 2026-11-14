@@ -76,7 +76,7 @@ pnpm deploy:saas
 
 - Issue-driven after the scaffold. Direction is settled in a GitHub issue first, with completion criteria written down, before touching code. `TODO.md` is the index of open issues, one row each.
 - One PR does one thing: a minimal feature, or the complete closure of one issue. Split unrelated changes.
-- One worktree per task, created from the latest main. Never commit directly on main; main only receives PR merges.
+- One worktree per task, created from the latest main **inside the repo at `.worktrees/<name>`** (`git worktree add .worktrees/<name> -b <branch> origin/main`). `.worktrees/` is gitignored — never put worktrees outside the project dir or commit it. Never commit directly on main; main only receives PR merges.
 - Branch names are `<type>/<kebab-case-description>` with types `feat|fix|docs|refactor|test|chore|build|ci|perf`. No issue numbers in branch names; link the issue from the PR with `Closes #123` or `Refs #123`.
 - Code, tests, and docs go in the same PR.
 

@@ -23,3 +23,6 @@ test-results/
 
 # finesse build log — local rotation memory
 .finesse/
+
+# Local git worktrees — one per task, created inside the repo (see AGENTS.md)
+.worktrees/
