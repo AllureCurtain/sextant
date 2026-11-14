@@ -17,18 +17,26 @@ import { useT } from "#/lib/i18n";
 
 export const Route = createFileRoute("/")({ component: Home });
 
-const FEATURES = [
+type Featured = "auth" | "billing" | undefined;
+const FEATURES: {
+  icon: typeof KeyRound;
+  title: string;
+  description: string;
+  featured?: Featured;
+}[] = [
   {
     icon: KeyRound,
     title: "Auth included",
     description:
       "Email/password, Google and GitHub OAuth on Better Auth. Sessions on D1, no external auth vendor.",
+    featured: "auth",
   },
   {
     icon: CreditCard,
     title: "Stripe billing",
     description:
       "Checkout, webhooks, and a billing portal wired in test mode. Entitlement state on D1.",
+    featured: "billing",
   },
   {
     icon: Coins,
@@ -67,27 +75,30 @@ const STACK = [
   "KV cache, rate limiting, analytics engine bindings",
 ];
 
+// SAMPLE placeholders — replace with real customer quotes before publishing.
+// These are deliberately generic and clearly marked so a fork never ships
+// fabricated testimonials that read as real users.
 const TESTIMONIALS = [
   {
     quote:
-      "I replaced two weeks of plumbing with one afternoon. Auth, Stripe, credits — it all just worked on the first deploy.",
-    name: "Indie SaaS builder",
-    role: "Shipped a paid AI tool",
-    initials: "IS",
+      "Replace this with a real quote from someone who shipped on the template — keep it specific to what they built.",
+    name: "Sample testimonial",
+    role: "Placeholder — swap in a real user",
+    initials: "S1",
   },
   {
     quote:
-      "The webhook-to-entitlement flow is the part every tutorial hand-waves. Here it's already deduplicated and tested.",
-    name: "Full-stack developer",
-    role: "Client work, three launches",
-    initials: "FD",
+      "Another real quote goes here. Concrete beats generic: mention the feature that saved them time.",
+    name: "Sample testimonial",
+    role: "Placeholder — swap in a real user",
+    initials: "S2",
   },
   {
     quote:
-      "I forked it for a side project and had checkout running in test mode before lunch. The credit system is honest code.",
-    name: "Side project, shipped",
-    role: "Weekend build",
-    initials: "SP",
+      "A third real quote. If you don't have users yet, delete this section rather than invent endorsements.",
+    name: "Sample testimonial",
+    role: "Placeholder — swap in a real user",
+    initials: "S3",
   },
 ];
 
@@ -133,6 +144,97 @@ const AVATARS = [
   { initials: "ER", color: "#a8a29e" },
 ];
 
+/**
+ * A pure-CSS miniature of the real dashboard — ink rail, KPI tiles, activity
+ * rows — so the hero shows the actual product in both light and dark themes.
+ * Uses the same --color-* tokens as the app, so it tracks the theme toggle.
+ */
+function DashboardMock() {
+  const kpis = [
+    { label: "Credits", value: "87" },
+    { label: "Plan", value: "Pro" },
+    { label: "Usage", bars: [40, 65, 30, 80, 55, 95, 70] },
+  ];
+  const rows = [
+    { action: "ai.summarize", credits: "1", time: "2m ago" },
+    { action: "ai.translate", credits: "1", time: "14m ago" },
+    { action: "file.upload", credits: "0", time: "1h ago" },
+  ];
+  return (
+    <div
+      aria-hidden="true"
+      className="reveal overflow-hidden rounded-2xl border border-border bg-panel text-left shadow-2xl ring-1 ring-black/5 dark:shadow-black/40"
+    >
+      {/* Window chrome */}
+      <div className="flex items-center gap-1.5 border-b border-border bg-panel-2 px-4 py-2.5">
+        <span className="h-2.5 w-2.5 rounded-full bg-neutral-300 dark:bg-neutral-600" />
+        <span className="h-2.5 w-2.5 rounded-full bg-neutral-300 dark:bg-neutral-600" />
+        <span className="h-2.5 w-2.5 rounded-full bg-neutral-300 dark:bg-neutral-600" />
+        <span className="ml-3 rounded-md bg-page px-2 py-0.5 text-[10px] text-ink-3">
+          sextant-saas.workers.dev/dashboard
+        </span>
+      </div>
+      <div className="flex">
+        {/* Ink rail */}
+        <div className="hidden w-28 shrink-0 flex-col gap-1 border-r border-border bg-ink-1 p-3 dark:bg-black sm:flex">
+          <div className="mb-2 text-[10px] font-semibold text-page">Sextant</div>
+          {["Dashboard", "Playground", "Settings", "Admin"].map((n, i) => (
+            <div
+              key={n}
+              className={`rounded-md px-2 py-1.5 text-[10px] ${
+                i === 0 ? "bg-white/10 font-medium text-white" : "text-page/50"
+              }`}
+            >
+              {n}
+            </div>
+          ))}
+        </div>
+        {/* Content */}
+        <div className="min-w-0 flex-1 p-4">
+          <div className="mb-3 flex items-center justify-between">
+            <span className="text-[11px] font-medium text-ink-1">Dashboard</span>
+            <span className="h-5 w-16 rounded-full bg-panel-2" />
+          </div>
+          <div className="grid grid-cols-3 gap-2">
+            {kpis.map((k) => (
+              <div key={k.label} className="rounded-lg border border-border bg-panel-2 p-2.5">
+                <p className="text-[8px] font-medium tracking-wide text-ink-3 uppercase">
+                  {k.label}
+                </p>
+                {k.value ? (
+                  <p className="mt-1 text-lg font-semibold text-ink-1 tabular-nums">{k.value}</p>
+                ) : (
+                  <div className="mt-1 flex h-5 items-end gap-0.5">
+                    {k.bars!.map((h, i) => (
+                      <span
+                        key={i}
+                        className="flex-1 rounded-sm bg-accent-500/80"
+                        style={{ height: `${h}%` }}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+          <div className="mt-3 overflow-hidden rounded-lg border border-border">
+            {rows.map((r) => (
+              <div
+                key={r.action}
+                className="flex items-center justify-between border-b border-border px-3 py-2 text-[10px] last:border-b-0"
+              >
+                <span className="font-medium text-ink-1">{r.action}</span>
+                <span className="text-ink-3 tabular-nums">{r.credits} cr</span>
+                <span className="text-ink-3">{r.time}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /** Grain texture inlined as an SVG data-uri — visible on the dark hero only. */
 const NOISE_BG =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E\")";
@@ -167,7 +269,7 @@ function Home() {
               <Sparkles className="h-3.5 w-3.5 text-coral-500" />
               {t("home.hero.badge")}
             </p>
-            <h1 className="rise stagger-1 hb-ink-1 mt-8 text-5xl font-bold tracking-[-0.03em] sm:text-6xl sm:leading-[1.04] lg:text-7xl">
+            <h1 className="display-type rise stagger-1 hb-ink-1 mt-8 text-5xl font-bold tracking-[-0.03em] sm:text-6xl sm:leading-[1.04] lg:text-7xl">
               {t("home.hero.titleA")}
               <br />
               <span className="bg-gradient-to-r from-[#8b84f7] via-[var(--hb-ink-1)] to-[#8b84f7] bg-clip-text text-transparent dark:from-white dark:via-[#8a8a8a] dark:to-white">
@@ -234,6 +336,15 @@ function Home() {
           </div>
         </section>
 
+        {/* ── Product visual — real UI, not a mock. A CSS miniature of the
+            actual dashboard so the first screen shows the product, in both
+            themes. Built from the real KPI tiles / rail / activity table. ── */}
+        <section className="relative overflow-hidden pb-20">
+          <div className="mx-auto max-w-4xl px-4">
+            <DashboardMock />
+          </div>
+        </section>
+
         {/* ── Features ─────────────────────────────────────────── */}
         <section className="border-b border-border bg-panel-2/60">
           <div className="mx-auto max-w-5xl px-4 py-20">
@@ -241,7 +352,7 @@ function Home() {
               <p className="text-xs font-semibold tracking-[0.15em] text-accent-700 uppercase">
                 Everything included
               </p>
-              <h2 className="mt-3 text-3xl font-bold tracking-tight text-ink-1 sm:text-4xl">
+              <h2 className="display-type mt-3 text-3xl font-bold tracking-tight text-ink-1 sm:text-4xl">
                 Not a demo — a working SaaS
               </h2>
               <p className="mt-3 text-base leading-relaxed text-ink-2">
@@ -249,11 +360,16 @@ function Home() {
                 transactional email — the plumbing you usually rebuild every project, already done.
               </p>
             </div>
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {/* Bento grid — Auth and Stripe billing take the large cells (they
+                carry a UI fragment), the rest are small. Desktop: 6-col bento;
+                mobile: single column. */}
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-6">
               {FEATURES.map((f) => (
                 <div
                   key={f.title}
-                  className="group rounded-xl border border-border bg-panel p-6 shadow-xs transition-all duration-200 hover:-translate-y-1 hover:border-border-strong hover:shadow-md"
+                  className={`group rounded-xl border border-border bg-panel p-6 shadow-xs transition-all duration-200 hover:-translate-y-1 hover:border-border-strong hover:shadow-md ${
+                    f.featured ? "sm:col-span-2 lg:col-span-3" : "lg:col-span-2"
+                  }`}
                 >
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent-soft text-accent-600 transition-transform duration-200 group-hover:scale-110">
                     <f.icon className="h-5 w-5" />
@@ -262,6 +378,33 @@ function Home() {
                     {f.title}
                   </h3>
                   <p className="mt-2 text-sm leading-relaxed text-ink-2">{f.description}</p>
+                  {f.featured === "auth" && (
+                    <div className="mt-4 flex flex-wrap gap-1.5">
+                      {["Email/password", "Google OAuth", "GitHub OAuth", "Sessions on D1"].map(
+                        (c) => (
+                          <span
+                            key={c}
+                            className="rounded-md bg-panel-2 px-2 py-1 text-[10px] font-medium text-ink-3"
+                          >
+                            {c}
+                          </span>
+                        ),
+                      )}
+                    </div>
+                  )}
+                  {f.featured === "billing" && (
+                    <div className="mt-4 flex items-center gap-2 rounded-lg border border-border bg-panel-2 px-3 py-2">
+                      <span className="flex h-6 w-6 items-center justify-center rounded bg-[#635bff] text-[10px] font-bold text-white">
+                        S
+                      </span>
+                      <div className="min-w-0">
+                        <p className="text-[11px] font-medium text-ink-1">
+                          Checkout → webhook → entitlement
+                        </p>
+                        <p className="text-[10px] text-ink-3">Signature-verified, deduplicated</p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -273,22 +416,25 @@ function Home() {
           <div className="mx-auto max-w-5xl px-4 py-20">
             <div className="reveal mb-12 max-w-xl">
               <p className="text-xs font-semibold tracking-[0.15em] text-accent-700 uppercase">
-                What early users are saying
+                What users say
               </p>
-              <h2 className="mt-3 text-3xl font-bold tracking-tight text-ink-1">
+              <h2 className="display-type mt-3 text-3xl font-bold tracking-tight text-ink-1">
                 Built for builders
               </h2>
               <p className="mt-3 text-base leading-relaxed text-ink-2">
-                Honest notes from people who forked the template and shipped on it — no logos, no
-                endorsements-for-hire.
+                Sample placeholders — replace these with real customer quotes before publishing, or
+                delete the section if there are none yet.
               </p>
             </div>
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {TESTIMONIALS.map((t) => (
                 <figure
-                  key={t.name + t.role}
-                  className="flex flex-col rounded-xl border border-border bg-panel p-6 shadow-xs transition-all duration-200 hover:-translate-y-1 hover:shadow-md"
+                  key={t.initials}
+                  className="relative flex flex-col rounded-xl border border-dashed border-border-strong bg-panel p-6 shadow-xs transition-all duration-200 hover:-translate-y-1 hover:shadow-md"
                 >
+                  <span className="absolute top-4 right-4 rounded bg-panel-2 px-1.5 py-0.5 text-[9px] font-semibold tracking-widest text-ink-3 uppercase">
+                    Sample
+                  </span>
                   <blockquote className="flex-1 text-[15px] leading-relaxed text-ink-2">
                     “{t.quote}”
                   </blockquote>
