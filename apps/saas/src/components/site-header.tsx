@@ -1,7 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
-import { LocaleSwitcher } from "#/components/locale-switcher";
 import { ThemeToggle } from "#/components/theme-toggle";
 import { useT } from "#/lib/i18n";
 
@@ -65,7 +64,6 @@ export function SiteHeader() {
               {t(l.key)}
             </Link>
           ))}
-          <LocaleSwitcher />
           <ThemeToggle />
           <Link
             to="/login"
@@ -83,7 +81,6 @@ export function SiteHeader() {
 
         {/* Mobile controls */}
         <div className="flex items-center gap-1 md:hidden">
-          <LocaleSwitcher />
           <ThemeToggle />
           <button
             type="button"

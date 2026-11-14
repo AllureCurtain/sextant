@@ -61,3 +61,9 @@ Append-only log. Newest at the bottom. Read this before changing a technology ch
 - **Settings tabs.** Profile / API Keys / Files / Usage — four tabs in one page instead of three sections stacked vertically. Profile tab supports `authClient.updateUser`, `authClient.changePassword`, `authClient.deleteUser` (two-step danger zone).
 - **Waitlist.** `waitlist_entry` table (email unique, source nullable); `POST /api/waitlist` public + idempotent + rate-limited at 10/min. Homepage signup form posts to it with `source: "homepage"`.
 - **SEO meta.** `og:title/description/type/image`, `twitter:card`, `description` on the root document — references `/og-image.png` which is a placeholder for a future generated image.
+
+## 2026-11-14 — i18n removed, English-only restored
+
+- The scaffold briefly shipped a Chinese locale pack (`src/locales/zh.ts`) plus a `LocaleSwitcher` — added with no decision record and against the v1 rule "English only, no i18n framework". Both are removed.
+- The typed `t()` / `LocaleProvider` plumbing stays, backed by `src/locales/en.ts` alone, so UI copy remains centralized and a second language can be reintroduced deliberately. `Locale` is now the literal `"en"`; there is no locale cookie and no switcher.
+- Multi-language support, if ever needed, gets its own issue and a recorded decision first.

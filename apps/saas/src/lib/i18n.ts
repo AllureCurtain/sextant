@@ -1,78 +1,49 @@
 import { createContext, createElement, useContext } from "react";
 import { en } from "../locales/en";
-import { zh } from "../locales/zh";
 
 /**
- * Minimal i18n for the SaaS app — English + Chinese as demo languages.
+ * Single-language strings for the SaaS app — English only.
  *
- * The locale travels in the `sextant-locale` cookie. The root route loader
- * (`src/routes/__root.tsx`) reads it on the server via `getLocaleFromRequest`
- * and the client on hydration via `getLocaleFromDocument`, so both passes
- * render the same strings and `<html lang>` is correct without a flash.
+ * Sextant ships English-only (see `docs/decisions.md`); the typed `t()` /
+ * `LocaleProvider` plumbing is kept so UI copy stays centralized in
+ * `src/locales/en.ts` and a second language can be added later with a
+ * dedicated issue — it is deliberately *not* a selectable-locale feature.
  *
- * Adding translations:
- *   1. Add the key + English text to `src/locales/en.ts`.
- *   2. Add the same key to `src/locales/zh.ts` (key order doesn't matter, but
- *      keeping the same shape is enforced — `zh` must satisfy `Messages`).
- *   3. Use it in a component under `<LocaleProvider>`:
+ * There is no locale cookie and no switcher: `Locale` is the literal "en" and
+ * every resolver returns it. The `<html lang>` attribute is a constant.
+ *
+ * Adding / changing copy:
+ *   1. Edit `src/locales/en.ts`.
+ *   2. Use the key under `<LocaleProvider>`:
  *        const t = useT();
  *        t("nav.blog")
- *      Dotted paths typecheck against the `en` dictionary, so a missing key
- *      is a compile error rather than a runtime blank.
- *
- * Adding a language:
- *   1. Create `src/locales/<code>.ts` satisfying `Messages`.
- *   2. Add the code to `LOCALES` and `DICTIONARIES` below.
- *   3. Add it to the labels in `src/components/locale-switcher.tsx`.
+ *      Dotted paths typecheck against the `en` dictionary, so a missing key is
+ *      a compile error rather than a runtime blank.
  */
 
-export const LOCALES = ["en", "zh"] as const;
-export type Locale = (typeof LOCALES)[number];
+export type Locale = "en";
 export const DEFAULT_LOCALE: Locale = "en";
-
-export const LOCALE_COOKIE = "sextant-locale";
 
 export type Messages = typeof en;
 
-const DICTIONARIES: Record<Locale, Messages> = { en, zh };
+const DICTIONARY: Messages = en;
 
 export function isLocale(value: unknown): value is Locale {
-  return typeof value === "string" && (LOCALES as readonly string[]).includes(value);
-}
-
-/** Read the locale cookie from a raw `Cookie` header value. */
-export function localeFromCookieHeader(cookieHeader: string | null | undefined): Locale {
-  if (cookieHeader) {
-    for (const part of cookieHeader.split(";")) {
-      const eq = part.indexOf("=");
-      if (eq === -1) continue;
-      if (part.slice(0, eq).trim() !== LOCALE_COOKIE) continue;
-      const value = decodeURIComponent(part.slice(eq + 1).trim());
-      if (isLocale(value)) return value;
-    }
-  }
-  return DEFAULT_LOCALE;
+  return value === "en";
 }
 
 /**
- * Locale for the current request. Server-side the root route loader already
- * resolved it from the request headers and handed it down through
- * `LocaleProvider`; this helper exists for server code paths that only have
- * the raw `Request` (e.g. `i18n-server.ts`).
+ * Locale for the current request. English-only: the request headers are
+ * ignored and the constant is returned. Kept as a function signature so the
+ * root loader call site (`src/routes/__root.tsx`) is unchanged.
  */
-export function getLocaleFromRequest(request: Request): Locale {
-  return localeFromCookieHeader(request.headers.get("cookie"));
+export function getLocaleFromRequest(_request: Request): Locale {
+  return DEFAULT_LOCALE;
 }
 
-/** Client-side: read the locale cookie from `document.cookie`. */
+/** Client-side: the document locale is always English. */
 export function getLocaleFromDocument(): Locale {
-  if (typeof document === "undefined") return DEFAULT_LOCALE;
-  return localeFromCookieHeader(document.cookie);
-}
-
-/** Persist the locale choice for a year and return it. */
-export function setLocaleCookie(locale: Locale) {
-  document.cookie = `${LOCALE_COOKIE}=${encodeURIComponent(locale)};path=/;max-age=31536000;SameSite=Lax`;
+  return DEFAULT_LOCALE;
 }
 
 type DotPaths<T, Prefix extends string = ""> = {
@@ -92,31 +63,29 @@ function lookup(dict: Messages, key: string): string {
 
 export type TranslateFn = (key: MessageKey) => string;
 
-export function translator(locale: Locale): TranslateFn {
-  const dict = DICTIONARIES[locale];
-  return (key) => lookup(dict, key);
+export function translator(_locale: Locale = DEFAULT_LOCALE): TranslateFn {
+  return (key) => lookup(DICTIONARY, key);
 }
 
 // ── React plumbing ─────────────────────────────────────────────────────────
 
 const LocaleContext = createContext<{ locale: Locale; t: TranslateFn }>({
   locale: DEFAULT_LOCALE,
-  t: translator(DEFAULT_LOCALE),
+  t: translator(),
 });
 
 /**
- * Provides `{ locale, t }` to the subtree. The `locale` prop should come from
- * the root route loader data so server render and hydration agree.
+ * Provides `{ locale, t }` to the subtree. The `locale` prop is accepted so the
+ * root route loader call site stays in place, but it is always `"en"`.
  */
 export function LocaleProvider({
-  locale,
+  locale = DEFAULT_LOCALE,
   children,
 }: {
-  locale: Locale;
+  locale?: Locale;
   children: React.ReactNode;
 }) {
-  // JSX-free so this file can stay `.ts` — the provider value is memo-free on
-  // purpose: `translator(locale)` is a cheap closure and locale changes reload.
+  // JSX-free so this file can stay `.ts`.
   return createElement(
     LocaleContext.Provider,
     { value: { locale, t: translator(locale) } },
