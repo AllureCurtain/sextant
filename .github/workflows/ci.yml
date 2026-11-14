@@ -60,6 +60,12 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # Build before deploy — each job is a fresh runner, so the `checks` job's
+      # dist/ output isn't present here and `wrangler deploy` would find no
+      # entry-point/assets.
+      - name: Build both apps
+        run: pnpm build
+
       - name: Apply SaaS D1 migrations (remote)
         run: pnpm --filter @sextant/saas exec wrangler d1 migrations apply DB --remote
         env:
