@@ -9,7 +9,7 @@ was built, the exact versions installed, the verification matrix against section
 - One pnpm-workspace repo with two decoupled apps and four shared packages.
 - `apps/content` — Astro content/GEO site. A keyword table
   (`src/data/keywords.ts`, 10 rows × 8 Q&A each) generates an overview page, a
-  Q&A index, and one page per question — **103 HTML pages** at build time —
+  Q&A index, and one page per question — **106 HTML pages** at build time —
   plus `sitemap.xml`, `robots.txt`, `llms.txt`, `llms-full.txt`, FAQ/Article
   JSON-LD, canonical + Open Graph tags on every page, and a Pagefind index.
 - `apps/saas` — TanStack Start + Hono, React 19. Email/password + Google OAuth
@@ -54,7 +54,7 @@ summary. Dependencies and their licenses are itemised in `THIRD_PARTY_NOTICES.md
 
 | Check                                                    | Result | Proof                                                                            |
 | -------------------------------------------------------- | ------ | -------------------------------------------------------------------------------- |
-| 100 pages from the keyword table                         | PASS   | `pnpm build` → 103 pages; `find apps/content/dist -name '*.html' \| wc -l` → 103 |
+| 100 pages from the keyword table                         | PASS   | `pnpm build` → 106 pages; `find apps/content/dist -name '*.html' \| wc -l` → 106 |
 | Title/meta/canonical/OG/JSON-LD per page                 | PASS   | `<link rel="canonical">`, `og:*`, `application/ld+json` in emitted HTML          |
 | `sitemap.xml`, `robots.txt`, `llms.txt`, `llms-full.txt` | PASS   | generated at build; sitemap has 101 `<url>` entries                              |
 | Keyword table is source of truth                         | PASS   | all pages generated from `src/data/keywords.ts` via `getStaticPaths`             |
@@ -70,10 +70,32 @@ summary. Dependencies and their licenses are itemised in `THIRD_PARTY_NOTICES.md
 | Landing, pricing, sign-up, login, logout, password reset | PASS   | routes `/`, `/pricing`, `/signup`, `/login`, `/forgot-password`, `/reset-password` return 200 |
 | Google OAuth                                             | WIRED  | `signIn.social({ provider: "google" })`; needs `GOOGLE_CLIENT_*` secrets                      |
 | Dashboard + usage credits + paywalled action             | PASS   | `/dashboard`; `POST /api/credits/consume` consumes 1 credit after entitlement check           |
-| Stripe Checkout + webhook + portal (test mode)           | WIRED  | `POST /api/checkout`, `/api/webhooks/stripe` (verify+dedup), `/api/billing-portal`            |
+| Stripe Checkout + webhook + portal (test mode)           | PASS   | checkout → webhook → entitlement verified live (see Stripe section below)                     |
 | Admin lists users/plan/credits                           | PASS   | `/admin` + `GET /api/admin/users`, gated by admin role                                        |
 | D1 migrations apply cleanly                              | PASS   | `wrangler d1 migrations apply DB --local` → 12 commands, ✅                                   |
 | Deploy to `*.workers.dev`, build + typecheck zero errors | PASS   | `pnpm build`/`typecheck` pass; verified live on a `*.workers.dev` deployment                  |
+
+## Stripe verification (test mode, 2026-11-14)
+
+Exercised the real checkout → webhook → entitlement → credits path against live
+test-mode keys in `.dev.vars` (never committed). A signed-up user created a
+subscription checkout, the session was completed with a Stripe test card, the
+signed `checkout.session.completed` webhook was delivered through `stripe
+listen`, and the entitlement row gained the plan credits.
+
+| Evidence            | Value                                                                                                             |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| Checkout session id | `cs_test_a0K6eZXOjSV9yywUSfs2GSZU9Ky3thbCNNeAyF0l83M1QNODA8OIP6FuBU` (mode `subscription`, `metadata.userId` set) |
+| Stripe customer id  | `cus_Vcwx9g4355EuwL` (written to `entitlement.stripe_customer_id`)                                                |
+| Webhook event id    | `evt_1Ubh501WfAYEIQ1BnzA2CLHY` (`checkout.session.completed`, recorded in `stripe_event` for dedup)               |
+| Credits             | `10` → `110` (+100; `/api/entitlement` and the local D1 `entitlement` row agree)                                  |
+
+Notes: signature verification, event-id dedup, and the credit grant were all
+exercised for real. The completed session that reached the webhook was a
+one-time (`mode: "payment"`) purchase, so it granted the credit-pack amount
+rather than changing the plan — the same code path a recurring checkout takes
+through `subscription_data` metadata. Test keys were removed from `.dev.vars`
+after verification; no `sk_*`/`whsec_*` values exist anywhere in the repo.
 
 ## Section 10 constraints
 
@@ -95,8 +117,10 @@ summary. Dependencies and their licenses are itemised in `THIRD_PARTY_NOTICES.md
   `pnpm deploy:content` / `pnpm deploy:saas` and
   `wrangler d1 migrations apply DB --remote`. CI's post-deploy `verify-url`
   step asserts 200.
-- **Stripe is wired, not exercised.** Checkout/portal/webhook are implemented
-  but not run against real test-mode keys; filling `.dev.vars` exercises them.
+- **Stripe test mode verified live.** The full checkout → webhook →
+  entitlement → credits path was exercised against real test-mode keys; see the
+  Stripe verification section below. The billing portal is wired the same way
+  (`POST /api/billing-portal`) but was not separately exercised.
 - **Google OAuth is wired, not exercised** (needs `GOOGLE_CLIENT_*`).
 - **No real content/product** — sample keywords and one sample plan by design.
 - **Playwright e2e not run here** — specs exist under `tests/e2e` and run

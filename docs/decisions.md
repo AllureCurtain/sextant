@@ -67,3 +67,8 @@ Append-only log. Newest at the bottom. Read this before changing a technology ch
 - The scaffold briefly shipped a Chinese locale pack (`src/locales/zh.ts`) plus a `LocaleSwitcher` — added with no decision record and against the v1 rule "English only, no i18n framework". Both are removed.
 - The typed `t()` / `LocaleProvider` plumbing stays, backed by `src/locales/en.ts` alone, so UI copy remains centralized and a second language can be reintroduced deliberately. `Locale` is now the literal `"en"`; there is no locale cookie and no switcher.
 - Multi-language support, if ever needed, gets its own issue and a recorded decision first.
+
+## 2026-11-14 — Content pages emitted directly, not via content collections
+
+- `docs/PLAN.md` §4 originally specified Astro content collections for the keyword pages. The shipped implementation emits them directly: `src/data/keywords.ts` is the single source of truth and `getStaticPaths` in the route files produces the overview, Q&A index, and per-question pages at build time (106 HTML pages). No content-collection schema is involved.
+- Functionally equivalent for this use case — the "collection" here is a typed TypeScript table, which is simpler to validate and review than markdown/MDX entries. Recorded as a deviation from the plan's wording.

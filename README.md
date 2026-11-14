@@ -57,14 +57,14 @@ pnpm deploy:content
 pnpm deploy:saas
 ```
 
-Each app has its own `wrangler.toml` and its own D1 database. See `docs/development.md` for the full deploy and environment-variable list.
+Each app has its own Wrangler config — `apps/content` uses `wrangler.toml`, `apps/saas` uses `wrangler.jsonc` (it holds the D1 binding). See `docs/development.md` for the full deploy and environment-variable list.
 
 ## Starting a new site from Sextant
 
 1. Fork this repo.
 2. Keep the app you need (`apps/content`, `apps/saas`, or both) and delete the other.
 3. Replace the keyword table in `apps/content/src/data/keywords.*` (content site) or the product/plan config in `apps/saas` (SaaS app).
-4. Set your domain in `wrangler.toml` and deploy.
+4. Set your domain in the app's Wrangler config (`apps/content/wrangler.toml` or `apps/saas/wrangler.jsonc`) and deploy.
 
 ## Rules
 

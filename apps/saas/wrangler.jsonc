@@ -13,7 +13,7 @@
       // then paste the printed "database_id" below, replacing the all-zeros
       // placeholder. Wrangler does not reliably interpolate env vars into
       // database_id, so the real id must live here (it is not a secret).
-      "database_id": "00000000-0000-0000-0000-000000000000",
+      "database_id": "4ed5fb11-86f9-4113-8ce9-27ca4a6a3c2b",
       "migrations_dir": "drizzle",
     },
   ],
@@ -27,29 +27,27 @@
   // local namespace for any id. For production, create the real namespace with
   //   wrangler kv namespace create sextant-kv
   // and paste the printed id below (it is not a secret).
-  "kv_namespaces": [{ "binding": "KV", "id": "sextant-kv" }],
+  "kv_namespaces": [{ "binding": "KV", "id": "a2f229b641c544ff99860cf43090aacc" }],
   // Cloudflare Workers AI binding. In dev, wrangler provides a local stub that
   // returns canned responses; real model inference runs when deployed.
   "ai": {
     "binding": "AI",
   },
-  // OPTIONAL: Workers Analytics Engine dataset for server-side event tracking
-  // (src/server/analytics/). When bound, events land in the "sextant_saas"
-  // dataset queryable via the Analytics Engine SQL API; when removed, the
-  // provider no-ops. Free to keep bound — Analytics Engine has no charge at
-  // this scale.
-  "analytics_engine_datasets": [{ "binding": "ANALYTICS_ENGINE", "dataset": "sextant_saas" }],
-  // OPTIONAL: Cloudflare Rate Limiting binding. When present, src/server/rate-limit.ts
-  // delegates to it (per-key count against `simple.limit` per `simple.period`);
-  // when absent, an in-memory sliding window enforces the same policy so local
-  // dev behaves the same. `period` is limited to 10 or 60 seconds.
-  "ratelimits": [
-    {
-      "name": "RATE_LIMITER",
-      "namespace_id": "sextant-saas",
-      "simple": { "limit": 100, "period": 60 },
-    },
-  ],
+  // OPTIONAL: Workers Analytics Engine dataset for server-side event tracking.
+  // NOT bound by default — it requires Analytics Engine enabled on the account
+  // (Dashboard → Workers → Analytics Engine) or deploy fails with code 10089.
+  // src/server/analytics/ no-ops when unbound. To opt in, enable it on the
+  // account and uncomment:
+  // "analytics_engine_datasets": [{ "binding": "ANALYTICS_ENGINE", "dataset": "sextant_saas" }],
+  //
+  // OPTIONAL: Cloudflare Rate Limiting binding. NOT bound by default — it needs
+  // a rate-limit namespace id (NOT a KV namespace id) or deploy fails with
+  // code 10021. When absent, src/server/rate-limit.ts enforces the same policy
+  // with an in-memory sliding window so behavior is identical. To opt in,
+  // create the namespace and uncomment:
+  // "ratelimits": [
+  //   { "name": "RATE_LIMITER", "namespace_id": "<id>", "simple": { "limit": 100, "period": 60 } },
+  // ],
   // OPTIONAL: Cloudflare Email Workers `send_email` binding. When
   // EMAIL_PROVIDER=cloudflare, transactional email is sent through this
   // binding instead of Resend (see src/server/emails.ts). Uncomment to enable:
@@ -58,6 +56,6 @@
     // Public URL of this deployment, used for auth callbacks and email links.
     // Replace YOUR-SUBDOMAIN with your Cloudflare account subdomain, or set a
     // custom domain. For local dev, .dev.vars overrides this with localhost.
-    "PUBLIC_SITE_URL": "https://sextant-saas.YOUR-SUBDOMAIN.workers.dev",
+    "PUBLIC_SITE_URL": "https://sextant-saas.alluresocina.workers.dev",
   },
 }
