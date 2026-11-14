@@ -34,28 +34,20 @@
     "binding": "AI",
   },
   // OPTIONAL: Workers Analytics Engine dataset for server-side event tracking.
-  // Requires Analytics Engine enabled on the account (Dashboard → Workers →
-  // Analytics Engine). If deploy fails with code 10089 "You need to enable
-  // Analytics Engine", enable it there or remove this binding.
-  // (src/server/analytics/). When bound, events land in the "sextant_saas"
-  // dataset queryable via the Analytics Engine SQL API; when removed, the
-  // provider no-ops. Free to keep bound — Analytics Engine has no charge at
-  // this scale.
-  "analytics_engine_datasets": [{ "binding": "ANALYTICS_ENGINE", "dataset": "sextant_saas" }],
-  // OPTIONAL: Cloudflare Rate Limiting binding. When present, src/server/rate-limit.ts
-  // delegates to it (per-key count against `simple.limit` per `simple.period`);
-  // when absent, an in-memory sliding window enforces the same policy so local
-  // dev behaves the same. `period` is limited to 10 or 60 seconds.
-  "ratelimits": [
-    {
-      "name": "RATE_LIMITER",
-      // namespace_id for ratelimits is a rate-limit namespace (NOT a KV
-      // namespace id) — a bare name works in some setups; if deploy fails with
-      // code 10021 "must have valid namespace_id", remove this whole binding.
-      "namespace_id": "sextant-saas",
-      "simple": { "limit": 100, "period": 60 },
-    },
-  ],
+  // NOT bound by default — it requires Analytics Engine enabled on the account
+  // (Dashboard → Workers → Analytics Engine) or deploy fails with code 10089.
+  // src/server/analytics/ no-ops when unbound. To opt in, enable it on the
+  // account and uncomment:
+  // "analytics_engine_datasets": [{ "binding": "ANALYTICS_ENGINE", "dataset": "sextant_saas" }],
+  //
+  // OPTIONAL: Cloudflare Rate Limiting binding. NOT bound by default — it needs
+  // a rate-limit namespace id (NOT a KV namespace id) or deploy fails with
+  // code 10021. When absent, src/server/rate-limit.ts enforces the same policy
+  // with an in-memory sliding window so behavior is identical. To opt in,
+  // create the namespace and uncomment:
+  // "ratelimits": [
+  //   { "name": "RATE_LIMITER", "namespace_id": "<id>", "simple": { "limit": 100, "period": 60 } },
+  // ],
   // OPTIONAL: Cloudflare Email Workers `send_email` binding. When
   // EMAIL_PROVIDER=cloudflare, transactional email is sent through this
   // binding instead of Resend (see src/server/emails.ts). Uncomment to enable:
