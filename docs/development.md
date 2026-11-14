@@ -96,7 +96,7 @@ The SaaS app ships with:
 - **Commits** — `/commits` lists the latest repo commits, baked into the bundle as `src/data/commits.json` by `scripts/generate-commits.mjs` (runs on `predev`/`prebuild`; a Worker cannot shell out to `git`)
 - **FAQ sections** — native `<details>` accordions on the homepage and `/pricing`
 - **Theme toggle** — light/dark mode, `.dark` class on `<html>`, persisted to `localStorage["sextant-theme"]`
-- **i18n** — cookie-based locale (`sextant-locale`, `en`/`zh`), `t()` + `useLocale()` + `<LocaleProvider>` in `src/lib/i18n.ts`; demonstrated on the SiteHeader nav and homepage hero
+- **i18n** — English-only; typed `t()` + `useLocale()` + `<LocaleProvider>` in `src/lib/i18n.ts` backed by `src/locales/en.ts`, keeping UI copy centralized
 - **Crisp Chat** — optional support widget injected when `CRISP_WEBSITE_ID` is set (see `src/components/crisp-chat.tsx`)
 - **User profile** — settings tab: update name, change password, delete account
 - **Waitlist** — `POST /api/waitlist` public endpoint + homepage signup form
@@ -125,6 +125,45 @@ Before the first SaaS deploy:
 For the content site, set `PUBLIC_SITE_URL` in the environment before
 `pnpm build:content` / `pnpm deploy:content` so canonical URLs, the sitemap,
 and JSON-LD point at your deployed origin.
+
+### CI deploy prerequisites
+
+The `deploy` job in `.github/workflows/ci.yml` runs only on pushes to `main`
+and needs four values configured in the repo, plus a real `database_id`. If any
+is missing the job fails loudly — the wrangler steps error on a missing/invalid
+`CLOUDFLARE_API_TOKEN`, and `verify-url.mjs` exits non-zero on an empty URL —
+so a red deploy means something is unset, never a silent skip.
+
+1. **Create the D1 database and paste its id.** Inside `apps/saas`:
+   `wrangler d1 create sextant-saas`, then paste the printed `database_id` into
+   `apps/saas/wrangler.jsonc` (replacing the all-zeros placeholder). Not a
+   secret — it is committed.
+2. **Repo secrets** (GitHub → Settings → Secrets and variables → Actions →
+   Secrets):
+   - `CLOUDFLARE_API_TOKEN` — a **minimal-scope token** for this repo only (see
+     below), not the account-global key.
+   - `CLOUDFLARE_ACCOUNT_ID` — from the Cloudflare dashboard sidebar.
+3. **Repo variables** (same page → Variables):
+   - `CONTENT_SITE_URL` — the content site's deployed URL, e.g.
+     `https://sextant-content.<subdomain>.workers.dev`.
+   - `SAAS_SITE_URL` — the SaaS app's deployed URL, e.g.
+     `https://sextant-saas.<subdomain>.workers.dev`.
+
+**Minimal API-token scope.** Create a fresh token (Cloudflare → My Profile →
+API Tokens → Create Token → "Custom token") scoped to this account with only:
+
+- `Account` → `Cloudflare Workers Scripts` → `Edit`
+- `Account` → `D1` → `Edit`
+- `Account` → `Account Settings` → `Read`
+
+That covers deploys and D1 migrations. If a deploy errors over a missing
+permission, add exactly that permission and retry — do not grant a broad token
+up front. Use a dedicated token for this repo; never reuse a full-access token.
+
+**Verifying.** There is no "test secret" button — a green deploy _is_ the
+verification. Push to `main` (or re-run the failed job) and confirm `checks`
+and `deploy` both pass; then record the two `*.workers.dev` URLs in
+`docs/BUILD-REPORT.md`.
 
 ## Testing
 
