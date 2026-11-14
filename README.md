@@ -9,34 +9,34 @@ Each app deploys on its own to Cloudflare Workers. They share only the plumbing 
 
 ## Status
 
-Scaffold. The plan is in [`docs/PLAN.md`](docs/PLAN.md); implementation is in progress. Do not treat this repo as a finished template yet. The quickstart below describes the target; it works once the build in `docs/PLAN.md` is complete.
+Working scaffold. The build in [`docs/PLAN.md`](docs/PLAN.md) is implemented and verified locally — both apps build, typecheck, lint, and the content site generates 100+ pages with SEO/GEO outputs. Live deploys to `*.workers.dev` require your own Cloudflare account (`wrangler login` or a `CLOUDFLARE_API_TOKEN`); see [`docs/BUILD-REPORT.md`](docs/BUILD-REPORT.md) for the verification matrix.
 
 ## Stack
 
-| Layer | Choice |
-| --- | --- |
-| Language | TypeScript |
-| Content site | Astro + `@astrojs/cloudflare` |
-| SaaS app | TanStack Start + Hono, React 19 |
-| Runtime | Cloudflare Workers (Wrangler) |
-| Database | Cloudflare D1 + Drizzle ORM |
-| Files | Cloudflare R2 |
-| Auth | Better Auth |
-| Payments | Stripe (test mode by default) |
-| Email | Resend (free tier) or Cloudflare Email |
-| Analytics | Cloudflare Web Analytics |
-| Styling | Tailwind CSS v4 |
-| Components | shadcn/ui (SaaS app) |
-| Icons | lucide-react |
-| Forms | React Hook Form + Zod |
-| Server state | TanStack Query |
-| Validation | Zod |
-| Jobs | Cloudflare Queues |
-| Cron | Cloudflare Cron Triggers |
-| Content search | Pagefind |
-| Testing | Vitest + Playwright smoke |
-| Lint/format | ESLint + Prettier |
-| Package manager | pnpm workspaces |
+| Layer           | Choice                                 |
+| --------------- | -------------------------------------- |
+| Language        | TypeScript                             |
+| Content site    | Astro + `@astrojs/cloudflare`          |
+| SaaS app        | TanStack Start + Hono, React 19        |
+| Runtime         | Cloudflare Workers (Wrangler)          |
+| Database        | Cloudflare D1 + Drizzle ORM            |
+| Files           | Cloudflare R2                          |
+| Auth            | Better Auth                            |
+| Payments        | Stripe (test mode by default)          |
+| Email           | Resend (free tier) or Cloudflare Email |
+| Analytics       | Cloudflare Web Analytics               |
+| Styling         | Tailwind CSS v4                        |
+| Components      | shadcn/ui (SaaS app)                   |
+| Icons           | lucide-react                           |
+| Forms           | React Hook Form + Zod                  |
+| Server state    | TanStack Query                         |
+| Validation      | Zod                                    |
+| Jobs            | Cloudflare Queues                      |
+| Cron            | Cloudflare Cron Triggers               |
+| Content search  | Pagefind                               |
+| Testing         | Vitest + Playwright smoke              |
+| Lint/format     | ESLint + Prettier                      |
+| Package manager | pnpm workspaces                        |
 
 ## Quickstart
 

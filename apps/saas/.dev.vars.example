@@ -4,14 +4,46 @@
 BETTER_AUTH_SECRET=
 GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
+# GitHub OAuth app credentials (optional — enables "Continue with GitHub")
+GITHUB_CLIENT_ID=
+GITHUB_CLIENT_SECRET=
+# Set to "true" to require email verification before login (default off — dev
+# works without a mail provider configured)
+REQUIRE_EMAIL_VERIFICATION=
 
 # Stripe (test mode keys while developing)
 STRIPE_SECRET_KEY=
 STRIPE_WEBHOOK_SECRET=
+# Recurring price id for the "pro" subscription plan. Served to the client via
+# /api/config — no PUBLIC_* vars needed in the bundle.
 STRIPE_PRICE_ID=
+# One-time price id for the credit pack. Must be a *non-recurring* Stripe price —
+# its checkout runs in mode "payment", which rejects subscription prices.
+STRIPE_CREDIT_PACK_PRICE_ID=
+
+# Payment provider for the billing API (optional, defaults to "stripe")
+PAYMENT_PROVIDER=
 
 # Email
+# Provider for transactional email (optional, defaults to "resend"; also "cloudflare"
+# to send via the send_email binding — see wrangler.jsonc for the commented example)
+EMAIL_PROVIDER=
 RESEND_API_KEY=
+
+# Newsletter provider (optional, defaults to "local" = D1 only; also "resend", "beehiiv", "mailcheap")
+NEWSLETTER_PROVIDER=
+# Beehiiv (only when NEWSLETTER_PROVIDER=beehiiv)
+BEEHIIV_API_KEY=
+BEEHIIV_PUBLICATION_ID=
+# MailCheap (only when NEWSLETTER_PROVIDER=mailcheap)
+MAILCHEAP_API_URL=
+MAILCHEAP_API_KEY=
+
+# Server-side analytics provider (optional, defaults to "cloudflare" = Analytics Engine binding)
+ANALYTICS_PROVIDER=
 
 # Public URL of this deployment (used for callbacks and email links)
 PUBLIC_SITE_URL=http://localhost:3000
+
+# Crisp Chat website id (optional — when set, the chat widget loads on every page)
+CRISP_WEBSITE_ID=

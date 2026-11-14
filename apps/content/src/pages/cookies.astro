@@ -1,0 +1,42 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base title="Cookie Policy" description="How Sextant uses cookies." path="/cookies">
+  <article class="prose">
+    <p class="label-caps text-signal">Legal</p>
+    <h1 class="display-type mt-3 text-4xl font-medium text-ink sm:text-5xl">Cookie Policy</h1>
+    <p class="mt-2 text-sm text-ink-3">Last updated: November 14, 2026</p>
+    <div class="mt-8 space-y-6 text-sm leading-relaxed text-ink-2">
+      <section>
+        <h2 class="font-semibold text-ink">What we use</h2>
+        <p class="mt-2">
+          We use cookies for authentication (session tokens), CSRF protection, and remembering your
+          preferences. We do not use third-party advertising cookies.
+        </p>
+      </section>
+      <section>
+        <h2 class="font-semibold text-ink">Essential cookies</h2>
+        <ul class="mt-2 list-inside list-disc space-y-1">
+          <li>
+            <code class="rounded bg-paper-inset px-1.5 py-0.5 text-xs">
+              better-auth.session_token
+            </code>
+            — keeps you logged in
+          </li>
+          <li>
+            <code class="rounded bg-paper-inset px-1.5 py-0.5 text-xs">better-auth.csrf_token</code>
+            — protects against cross-site request forgery
+          </li>
+        </ul>
+      </section>
+      <section>
+        <h2 class="font-semibold text-ink">Analytics</h2>
+        <p class="mt-2">
+          If enabled, Cloudflare Web Analytics collects anonymous usage statistics. No personal data
+          is collected and no cookies are set.
+        </p>
+      </section>
+    </div>
+  </article>
+</Base>

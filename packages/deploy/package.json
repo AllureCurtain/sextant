@@ -1,0 +1,12 @@
+{
+  "name": "@sextant/deploy",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "bin": {
+    "sextant-verify-url": "./src/verify-url.mjs"
+  }
+}

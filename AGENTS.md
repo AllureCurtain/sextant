@@ -4,30 +4,30 @@ Sextant is a Cloudflare-native template for building outbound sites fast: one re
 
 ## Tech stack
 
-| Layer | Choice |
-| --- | --- |
-| Language | TypeScript, strict mode |
-| Content site | Astro + `@astrojs/cloudflare` |
-| SaaS app | TanStack Start + Hono, React 19 |
-| Runtime | Cloudflare Workers (Wrangler); Node 22 LTS or newer for tooling |
-| Database | Cloudflare D1 + Drizzle ORM |
-| Files | Cloudflare R2 |
-| Auth | Better Auth |
-| Payments | Stripe (test mode by default) |
-| Email | Resend (free tier) or Cloudflare Email |
-| Analytics | Cloudflare Web Analytics |
-| Styling | Tailwind CSS v4 |
-| Components | shadcn/ui (SaaS app) |
-| Icons | lucide-react |
-| Forms | React Hook Form + Zod |
-| Server state | TanStack Query |
-| Validation | Zod |
-| Jobs | Cloudflare Queues |
-| Cron | Cloudflare Cron Triggers |
-| Content search | Pagefind |
-| Testing | Vitest + Playwright smoke |
-| Lint/format | ESLint (flat config) + Prettier |
-| Package manager | pnpm workspaces |
+| Layer           | Choice                                                          |
+| --------------- | --------------------------------------------------------------- |
+| Language        | TypeScript, strict mode                                         |
+| Content site    | Astro + `@astrojs/cloudflare`                                   |
+| SaaS app        | TanStack Start + Hono, React 19                                 |
+| Runtime         | Cloudflare Workers (Wrangler); Node 22 LTS or newer for tooling |
+| Database        | Cloudflare D1 + Drizzle ORM                                     |
+| Files           | Cloudflare R2                                                   |
+| Auth            | Better Auth                                                     |
+| Payments        | Stripe (test mode by default)                                   |
+| Email           | Resend (free tier) or Cloudflare Email                          |
+| Analytics       | Cloudflare Web Analytics                                        |
+| Styling         | Tailwind CSS v4                                                 |
+| Components      | shadcn/ui (SaaS app)                                            |
+| Icons           | lucide-react                                                    |
+| Forms           | React Hook Form + Zod                                           |
+| Server state    | TanStack Query                                                  |
+| Validation      | Zod                                                             |
+| Jobs            | Cloudflare Queues                                               |
+| Cron            | Cloudflare Cron Triggers                                        |
+| Content search  | Pagefind                                                        |
+| Testing         | Vitest + Playwright smoke                                       |
+| Lint/format     | ESLint (flat config) + Prettier                                 |
+| Package manager | pnpm workspaces                                                 |
 
 ## Layout
 
@@ -96,15 +96,15 @@ Never bypass checks. CI runs the same gates.
 
 ## Source of truth
 
-| Information | Authority |
-| --- | --- |
-| Template shape and build order | `docs/PLAN.md` |
-| Commands, env vars, deploy, release | `docs/development.md` |
-| Technical decisions | `docs/decisions.md` |
-| Content model and GEO rules | `apps/content/AGENTS.md` |
-| SaaS API, auth, billing | `apps/saas/AGENTS.md` |
-| Current progress | `TODO.md` |
-| Reused code and licenses | `THIRD_PARTY_NOTICES.md` |
+| Information                         | Authority                |
+| ----------------------------------- | ------------------------ |
+| Template shape and build order      | `docs/PLAN.md`           |
+| Commands, env vars, deploy, release | `docs/development.md`    |
+| Technical decisions                 | `docs/decisions.md`      |
+| Content model and GEO rules         | `apps/content/AGENTS.md` |
+| SaaS API, auth, billing             | `apps/saas/AGENTS.md`    |
+| Current progress                    | `TODO.md`                |
+| Reused code and licenses            | `THIRD_PARTY_NOTICES.md` |
 
 ## Hard rules
 
@@ -120,15 +120,15 @@ Never bypass checks. CI runs the same gates.
 
 ## Documentation index
 
-| When | Read |
-| --- | --- |
-| Starting any task | `TODO.md` |
-| Template shape and build order | `docs/PLAN.md` |
-| Commands, env vars, deploy, release | `docs/development.md` |
-| Technical decisions | `docs/decisions.md` |
-| Content model and GEO rules | `apps/content/AGENTS.md` |
-| SaaS API, auth, billing | `apps/saas/AGENTS.md` |
-| Reused code and licenses | `THIRD_PARTY_NOTICES.md` |
+| When                                | Read                     |
+| ----------------------------------- | ------------------------ |
+| Starting any task                   | `TODO.md`                |
+| Template shape and build order      | `docs/PLAN.md`           |
+| Commands, env vars, deploy, release | `docs/development.md`    |
+| Technical decisions                 | `docs/decisions.md`      |
+| Content model and GEO rules         | `apps/content/AGENTS.md` |
+| SaaS API, auth, billing             | `apps/saas/AGENTS.md`    |
+| Reused code and licenses            | `THIRD_PARTY_NOTICES.md` |
 
 ## Documentation update rules
 

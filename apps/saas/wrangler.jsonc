@@ -1,0 +1,63 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "sextant-saas",
+  "compatibility_date": "2025-09-02",
+  "compatibility_flags": ["nodejs_compat"],
+  "main": "./src/server-entry.ts",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "sextant-saas",
+      // SETUP REQUIRED: create the database with
+      //   wrangler d1 create sextant-saas
+      // then paste the printed "database_id" below, replacing the all-zeros
+      // placeholder. Wrangler does not reliably interpolate env vars into
+      // database_id, so the real id must live here (it is not a secret).
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "drizzle",
+    },
+  ],
+  "r2_buckets": [
+    {
+      "binding": "BUCKET",
+      "bucket_name": "sextant-saas-files",
+    },
+  ],
+  // Workers KV namespace for cache/demo endpoints. In dev wrangler serves a
+  // local namespace for any id. For production, create the real namespace with
+  //   wrangler kv namespace create sextant-kv
+  // and paste the printed id below (it is not a secret).
+  "kv_namespaces": [{ "binding": "KV", "id": "sextant-kv" }],
+  // Cloudflare Workers AI binding. In dev, wrangler provides a local stub that
+  // returns canned responses; real model inference runs when deployed.
+  "ai": {
+    "binding": "AI",
+  },
+  // OPTIONAL: Workers Analytics Engine dataset for server-side event tracking
+  // (src/server/analytics/). When bound, events land in the "sextant_saas"
+  // dataset queryable via the Analytics Engine SQL API; when removed, the
+  // provider no-ops. Free to keep bound — Analytics Engine has no charge at
+  // this scale.
+  "analytics_engine_datasets": [{ "binding": "ANALYTICS_ENGINE", "dataset": "sextant_saas" }],
+  // OPTIONAL: Cloudflare Rate Limiting binding. When present, src/server/rate-limit.ts
+  // delegates to it (per-key count against `simple.limit` per `simple.period`);
+  // when absent, an in-memory sliding window enforces the same policy so local
+  // dev behaves the same. `period` is limited to 10 or 60 seconds.
+  "ratelimits": [
+    {
+      "name": "RATE_LIMITER",
+      "namespace_id": "sextant-saas",
+      "simple": { "limit": 100, "period": 60 },
+    },
+  ],
+  // OPTIONAL: Cloudflare Email Workers `send_email` binding. When
+  // EMAIL_PROVIDER=cloudflare, transactional email is sent through this
+  // binding instead of Resend (see src/server/emails.ts). Uncomment to enable:
+  // "send_email": [{ "name": "SEND_EMAIL" }],
+  "vars": {
+    // Public URL of this deployment, used for auth callbacks and email links.
+    // Replace YOUR-SUBDOMAIN with your Cloudflare account subdomain, or set a
+    // custom domain. For local dev, .dev.vars overrides this with localhost.
+    "PUBLIC_SITE_URL": "https://sextant-saas.YOUR-SUBDOMAIN.workers.dev",
+  },
+}

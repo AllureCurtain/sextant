@@ -1,0 +1,43 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base title="Privacy Policy" description="How Sextant handles your data." path="/privacy">
+  <article class="prose">
+    <p class="label-caps text-signal">Legal</p>
+    <h1 class="display-type mt-3 text-4xl font-medium text-ink sm:text-5xl">Privacy Policy</h1>
+    <p class="mt-2 text-sm text-ink-3">Last updated: November 14, 2026</p>
+    <div class="mt-8 space-y-6 text-sm leading-relaxed text-ink-2">
+      <section>
+        <h2 class="font-semibold text-ink">What we collect</h2>
+        <p class="mt-2">
+          When you create an account, we store your email address, name, and a hashed password. If
+          you sign in with Google, we receive your Google profile information. We also store your
+          subscription status and credit balance.
+        </p>
+      </section>
+      <section>
+        <h2 class="font-semibold text-ink">What we do with it</h2>
+        <p class="mt-2">
+          We use your data to provide the service: authenticate you, process payments through
+          Stripe, send transactional emails (welcome, receipts, password resets), and show your
+          usage history. We do not sell your data to third parties.
+        </p>
+      </section>
+      <section>
+        <h2 class="font-semibold text-ink">Third parties</h2>
+        <p class="mt-2">
+          We use Stripe for payments, Resend for transactional email, and Cloudflare for hosting.
+          Each has its own privacy policy.
+        </p>
+      </section>
+      <section>
+        <h2 class="font-semibold text-ink">Your rights</h2>
+        <p class="mt-2">
+          You can delete your account at any time from the settings page, which removes all
+          associated data. You can also request a copy of your data by contacting us.
+        </p>
+      </section>
+    </div>
+  </article>
+</Base>

@@ -1,0 +1,27 @@
+[
+  {
+    "hash": "9fbcf01",
+    "message": "Clarify language rule: Chinese chat OK, English artifacts only",
+    "date": "2026-11-14T10:24:00+08:00"
+  },
+  {
+    "hash": "f91554d",
+    "message": "Build from official starters only; drop third-party boilerplate",
+    "date": "2026-11-14T10:16:33+08:00"
+  },
+  {
+    "hash": "e3bb5e8",
+    "message": "Apply house norms: AGENTS.md, settled stack, all-English",
+    "date": "2026-11-14T10:11:17+08:00"
+  },
+  {
+    "hash": "5dd6353",
+    "message": "Scaffold Sextant: README + build plan (docs/PLAN.md)",
+    "date": "2026-11-14T10:02:31+08:00"
+  },
+  {
+    "hash": "25914f8",
+    "message": "Initial commit",
+    "date": "2026-11-14T10:01:20+08:00"
+  }
+]
