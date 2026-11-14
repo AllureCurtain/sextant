@@ -1,0 +1,39 @@
+{
+  "name": "sextant",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "engines": {
+    "node": ">=22.23.4",
+    "pnpm": ">=9"
+  },
+  "packageManager": "pnpm@12.16.1",
+  "scripts": {
+    "dev:content": "pnpm --filter @sextant/content dev",
+    "dev:saas": "pnpm --filter @sextant/saas dev",
+    "build": "pnpm -r --filter './apps/*' build",
+    "build:content": "pnpm --filter @sextant/content build",
+    "build:saas": "pnpm --filter @sextant/saas build",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "deploy:content": "pnpm --filter @sextant/content run deploy",
+    "deploy:saas": "pnpm --filter @sextant/saas run deploy",
+    "deploy:setup": "pnpm --filter @sextant/deploy-cli build && node packages/deploy-cli/dist/index.js"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@playwright/test": "^1.57.0",
+    "eslint": "^9.39.1",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^16.5.0",
+    "prettier": "^3.6.2",
+    "prettier-plugin-astro": "^1.1.2",
+    "typescript": "^6.0.2",
+    "typescript-eslint": "^8.46.4",
+    "vitest": "^4.0.6"
+  }
+}

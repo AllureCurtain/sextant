@@ -1,0 +1,41 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1794624988673,
+      "tag": "0000_huge_invaders",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1794628044286,
+      "tag": "0001_flaky_vulture",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1794628131958,
+      "tag": "0002_watery_yellow_claw",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1794632405020,
+      "tag": "0003_yummy_slipstream",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1794635751960,
+      "tag": "0004_glorious_meggan",
+      "breakpoints": true
+    }
+  ]
+}

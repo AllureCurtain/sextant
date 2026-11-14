@@ -1,0 +1,106 @@
+---
+import Base from "../../../../layouts/Base.astro";
+import { canonical, faqLdForEntry, questionPath, questionSlug } from "../../../../lib/geo";
+import { KEYWORDS, type FaqEntry, type KeywordRow } from "../../../../data/keywords";
+
+export function getStaticPaths() {
+  return KEYWORDS.flatMap((row) =>
+    row.faq.map((entry) => ({
+      params: { slug: row.slug, question: questionSlug(entry.question) },
+      props: { row, entry },
+    })),
+  );
+}
+
+interface Props {
+  row: KeywordRow;
+  entry: FaqEntry;
+}
+
+const { row, entry } = Astro.props;
+---
+
+<Base
+  title={entry.question}
+  description={entry.answer.slice(0, 160)}
+  path={questionPath(row, entry.question)}
+  jsonLd={faqLdForEntry(entry)}
+>
+  <article>
+    <nav class="text-sm text-ink-3">
+      <a
+        class="text-ink-3 underline decoration-border-strong underline-offset-2 transition-colors hover:text-signal hover:decoration-signal"
+        href="/keywords"
+      >
+        Topics
+      </a>
+      <span class="mx-1.5 text-ink-4">/</span>
+      <a
+        class="text-ink-3 underline decoration-border-strong underline-offset-2 transition-colors hover:text-signal hover:decoration-signal"
+        href={`/keywords/${row.slug}`}
+      >
+        {row.keyword}
+      </a>
+      <span class="mx-1.5 text-ink-4">/</span>
+      <a
+        class="text-ink-3 underline decoration-border-strong underline-offset-2 transition-colors hover:text-signal hover:decoration-signal"
+        href={`/keywords/${row.slug}/questions`}
+      >
+        Questions
+      </a>
+    </nav>
+
+    <h1 class="display-type mt-6 max-w-2xl text-4xl font-medium text-ink sm:text-5xl">
+      {entry.question}
+    </h1>
+    <p class="mt-6 max-w-2xl text-lg leading-relaxed text-ink-2">{entry.answer}</p>
+
+    <div class="mt-12 border-t border-border pt-8">
+      <p class="label-caps text-ink-3">More about {row.keyword}</p>
+      <ol class="mt-4 divide-y divide-border border-y border-border">
+        {row.faq
+          .filter((f) => f.question !== entry.question)
+          .map((f) => (
+            <li>
+              <a
+                class="group flex items-center justify-between gap-4 py-3 text-sm font-medium text-ink transition-colors hover:text-signal"
+                href={questionPath(row, f.question)}
+              >
+                <span>{f.question}</span>
+                <span
+                  aria-hidden="true"
+                  class="shrink-0 text-ink-4 transition-all duration-150 group-hover:translate-x-0.5 group-hover:text-signal"
+                >
+                  →
+                </span>
+              </a>
+            </li>
+          ))}
+      </ol>
+    </div>
+
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: canonical("/") },
+          { "@type": "ListItem", position: 2, name: "Topics", item: canonical("/keywords") },
+          {
+            "@type": "ListItem",
+            position: 3,
+            name: row.keyword,
+            item: canonical(`/keywords/${row.slug}`),
+          },
+          {
+            "@type": "ListItem",
+            position: 4,
+            name: "Questions",
+            item: canonical(`/keywords/${row.slug}/questions`),
+          },
+        ],
+      })}
+    />
+  </article>
+</Base>

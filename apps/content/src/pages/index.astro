@@ -1,0 +1,75 @@
+---
+import Base from "../layouts/Base.astro";
+import Newsletter from "../components/Newsletter.astro";
+import { KEYWORDS } from "../data/keywords";
+---
+
+<Base
+  title="Sextant — Cloudflare-native outbound site template"
+  description="Sextant is a Cloudflare-native template for outbound sites: a content/GEO site and a SaaS app in one repo."
+  path="/"
+>
+  <section>
+    <p class="label-caps text-signal">Cloudflare-native template</p>
+    <h1 class="display-type mt-4 text-5xl font-medium text-ink sm:text-6xl">
+      One repo for your content site and your SaaS.
+    </h1>
+    <p class="mt-6 max-w-xl text-lg leading-relaxed text-ink-2">
+      Sextant pairs a generated content site, where every keyword becomes an overview page and a
+      Q&amp;A tuned for search engines and AI answers, with a working SaaS app for auth, billing,
+      and credits. Both deploy to Cloudflare Workers.
+    </p>
+    <div class="mt-8 flex items-center gap-3">
+      <a
+        href="/keywords"
+        class="inline-flex h-10 items-center justify-center rounded-lg bg-signal px-5 text-sm font-medium text-paper shadow-sm transition-all duration-150 hover:-translate-y-px hover:bg-signal-hover hover:shadow-md"
+      >
+        Browse topics
+      </a>
+      <a
+        href="/search"
+        class="inline-flex h-10 items-center justify-center rounded-lg border border-border-strong bg-paper-raised px-5 text-sm font-medium text-ink transition-all duration-150 hover:-translate-y-px hover:border-ink-3 hover:bg-paper"
+      >
+        Search the site
+      </a>
+    </div>
+  </section>
+
+  <hr class="my-14 border-border" />
+
+  <section>
+    <p class="label-caps text-signal">Topics</p>
+    <h2 class="mt-3 text-2xl font-semibold tracking-tight text-ink">What the template covers</h2>
+
+    <ol class="mt-8 divide-y divide-border">
+      {KEYWORDS.map((row, i) => (
+        <li>
+          <a
+            href={`/keywords/${row.slug}`}
+            class="group flex items-baseline gap-4 py-4 transition-colors hover:bg-paper-raised"
+          >
+            <span class="mono-data w-6 shrink-0 text-right text-sm text-ink-4">
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <div class="min-w-0 flex-1">
+              <span class="font-medium text-ink transition-colors group-hover:text-signal">
+                {row.keyword}
+              </span>
+              <p class="mt-1 text-sm leading-relaxed text-ink-3">{row.description}</p>
+            </div>
+            <span
+              aria-hidden="true"
+              class="ml-auto shrink-0 text-ink-4 transition-all duration-150 group-hover:translate-x-0.5 group-hover:text-signal"
+            >
+              →
+            </span>
+          </a>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <hr class="my-14 border-border" />
+
+  <Newsletter />
+</Base>

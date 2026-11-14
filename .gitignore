@@ -1,6 +1,22 @@
 node_modules/
 dist/
+.astro/
 .wrangler/
 .dev.vars
+.dev.vars.*
+!.dev.vars.example
 *.local
 .DS_Store
+.output/
+.vercel/
+.env
+.env.*
+!.env.example
+coverage/
+playwright-report/
+test-results/
+*.gen.ts
+!tsconfig.node.json
+
+# finesse build log — local rotation memory
+.finesse/

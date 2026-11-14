@@ -1,0 +1,39 @@
+---
+import Base from "../../layouts/Base.astro";
+import { KEYWORDS } from "../../data/keywords";
+---
+
+<Base title="All topics" description="Every topic on this site." path="/keywords">
+  <p class="label-caps text-signal">Index</p>
+  <h1 class="display-type mt-3 text-4xl font-medium text-ink sm:text-5xl">All topics</h1>
+  <p class="mt-4 max-w-2xl text-ink-2">
+    Every topic on this site, each with an overview and a set of common questions.
+  </p>
+
+  <ol class="mt-10 divide-y divide-border">
+    {KEYWORDS.map((row, i) => (
+      <li>
+        <a
+          href={`/keywords/${row.slug}`}
+          class="group flex items-baseline gap-4 py-4 transition-colors hover:bg-paper-raised"
+        >
+          <span class="mono-data w-6 shrink-0 text-right text-sm text-ink-4">
+            {String(i + 1).padStart(2, "0")}
+          </span>
+          <div class="min-w-0 flex-1">
+            <span class="font-medium text-ink transition-colors group-hover:text-signal">
+              {row.keyword}
+            </span>
+            <p class="mt-1 text-sm leading-relaxed text-ink-3">{row.description}</p>
+          </div>
+          <span
+            aria-hidden="true"
+            class="ml-auto shrink-0 text-ink-4 transition-all duration-150 group-hover:translate-x-0.5 group-hover:text-signal"
+          >
+            →
+          </span>
+        </a>
+      </li>
+    ))}
+  </ol>
+</Base>

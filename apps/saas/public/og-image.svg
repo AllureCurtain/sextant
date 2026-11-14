@@ -1,0 +1,20 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <!-- Dark teal background -->
+  <rect width="1200" height="630" fill="#0f2422"/>
+  <!-- Sextant compass mark -->
+  <g transform="translate(80,240)" fill="none" stroke="#2dd4bf" stroke-width="6">
+    <circle cx="40" cy="40" r="40" stroke-opacity="0.9"/>
+    <line x1="40" y1="4" x2="40" y2="76" stroke-opacity="0.55" stroke-width="4"/>
+    <line x1="4" y1="40" x2="76" y2="40" stroke-opacity="0.55" stroke-width="4"/>
+    <line x1="40" y1="40" x2="61" y2="19" stroke-width="5"/>
+    <circle cx="40" cy="40" r="7" fill="#2dd4bf" stroke="none"/>
+  </g>
+  <!-- Wordmark -->
+  <text x="200" y="292" font-family="Helvetica, Arial, sans-serif" font-size="84" font-weight="700" letter-spacing="-2" fill="#f4f7f6">Sextant</text>
+  <!-- Subtitle -->
+  <text x="80" y="386" font-family="Helvetica, Arial, sans-serif" font-size="38" font-weight="400" letter-spacing="0.5" fill="#9fb8b4">Ship your SaaS on the edge.</text>
+  <!-- Tagline -->
+  <text x="80" y="452" font-family="Helvetica, Arial, sans-serif" font-size="24" font-weight="400" letter-spacing="0.5" fill="#6d8f8a">Auth &#183; Billing &#183; Credits &#183; Storage &#8212; on Cloudflare Workers</text>
+  <!-- Teal accent bar -->
+  <rect x="0" y="596" width="1200" height="34" fill="#2dd4bf"/>
+</svg>

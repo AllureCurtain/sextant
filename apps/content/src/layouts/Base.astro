@@ -1,0 +1,127 @@
+---
+import { cloudflareWebAnalytics } from "@sextant/analytics";
+import { canonical, SITE_NAME } from "../lib/geo";
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description: string;
+  /** Absolute path for the canonical URL, e.g. `/keywords/foo`. */
+  path: string;
+  /** Optional JSON-LD object to embed. */
+  jsonLd?: Record<string, unknown>;
+}
+
+const { title, description, path, jsonLd } = Astro.props;
+const canonicalUrl = canonical(path);
+const analyticsToken = import.meta.env.PUBLIC_CF_ANALYTICS_TOKEN ?? "";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..800;1,6..72,300..800&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+
+    {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+    <Fragment set:html={cloudflareWebAnalytics({ token: analyticsToken })} />
+  </head>
+  <body class="bg-paper text-ink antialiased">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded-md focus:bg-ink focus:px-3 focus:py-2 focus:text-paper"
+    >
+      Skip to content
+    </a>
+    <header class="sticky top-0 z-40 border-b border-border bg-paper/85 backdrop-blur-md">
+      <div class="mx-auto flex max-w-3xl items-center justify-between px-4 py-3.5">
+        <a
+          href="/"
+          class="display-type text-lg font-medium tracking-tight text-ink transition-colors hover:text-signal"
+        >
+          {SITE_NAME}
+        </a>
+        <nav class="flex items-center gap-5 text-sm text-ink-3">
+          <a class="nav-link hover:text-ink" href="/keywords">
+            {" "}
+            Topics{" "}
+          </a>
+          <a class="nav-link hover:text-ink" href="/search">
+            {" "}
+            Search{" "}
+          </a>
+        </nav>
+      </div>
+    </header>
+    <main id="main" class="page-in relative z-[5] mx-auto w-full max-w-3xl px-4 py-12 sm:py-16">
+      <slot />
+    </main>
+    <footer class="relative z-[5] border-t border-border">
+      <div class="mx-auto flex max-w-3xl flex-col gap-2 px-4 py-8 text-sm text-ink-3 sm:flex-row sm:items-center sm:justify-between">
+        <p>
+          Built with{" "}
+          <a
+            class="text-ink-2 underline decoration-border-strong underline-offset-2 transition-colors hover:text-signal hover:decoration-signal"
+            href="https://astro.build"
+          >
+            Astro
+          </a>{" "}
+          on{" "}
+          <a
+            class="text-ink-2 underline decoration-border-strong underline-offset-2 transition-colors hover:text-signal hover:decoration-signal"
+            href="https://workers.cloudflare.com"
+          >
+            Cloudflare Workers
+          </a>
+          .
+        </p>
+        <div class="flex items-center gap-4">
+          <a
+            href="/privacy"
+            class="text-ink-3 underline decoration-border-strong underline-offset-2 transition-colors hover:text-signal hover:decoration-signal"
+          >
+            Privacy
+          </a>
+          <a
+            href="/terms"
+            class="text-ink-3 underline decoration-border-strong underline-offset-2 transition-colors hover:text-signal hover:decoration-signal"
+          >
+            Terms
+          </a>
+          <a
+            href="/llms.txt"
+            class="text-ink-3 underline decoration-border-strong underline-offset-2 transition-colors hover:text-signal hover:decoration-signal"
+          >
+            llms.txt
+          </a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

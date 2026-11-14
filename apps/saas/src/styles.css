@@ -1,0 +1,435 @@
+@import "tailwindcss";
+
+/* Dark theme keyed on `.dark` on <html>, toggled by ThemeToggle. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* finesse · register=product · dual-theme=editorial-light+linear-dark · shell=topbar-content */
+/*
+ * Sextant design tokens — SaaS app (product register), two themes on one ramp pair.
+ * Light = Jitter-style editorial: warm-white page, ink text, near-black primary.
+ * Dark  = Linear-style: pure-black page, white ink, white primary (ramps invert).
+ * accent = theme ink (the primary action); coral = indigo partner hue for
+ * badges/highlights; on-accent flips so pill buttons stay readable both ways.
+ */
+
+@theme {
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  /* Page / surface — Jitter-style editorial light: warm-white page, ink text,
+   * near-black primary action. Coolness kept minimal (no tint). */
+  --color-page: #fafaf9;
+  --color-panel: #ffffff;
+  --color-panel-2: #f5f4f2;
+  --color-border: rgba(25, 23, 28, 0.08);
+  --color-border-strong: rgba(25, 23, 28, 0.14);
+
+  /* Ink ramp — near-neutral warm charcoal. */
+  --color-ink-1: #19171c;
+  --color-ink-2: #44403c;
+  --color-ink-3: #78716c;
+
+  /* Neutral utility scale — warm grey ramp. */
+  --color-neutral-50: #fafaf9;
+  --color-neutral-100: #f5f5f4;
+  --color-neutral-200: #e7e5e4;
+  --color-neutral-300: #d6d3d1;
+  --color-neutral-400: #a8a29e;
+  --color-neutral-500: #78716c;
+  --color-neutral-600: #57534e;
+  --color-neutral-700: #44403c;
+  --color-neutral-800: #292524;
+  --color-neutral-900: #1c1917;
+  --color-neutral-950: #0c0a09;
+
+  /* Accent — near-black ink (the primary action is the black pill). */
+  --color-accent-50: #f5f4f2;
+  --color-accent-100: #e7e5e4;
+  --color-accent-200: #d6d3d1;
+  --color-accent-300: #a8a29e;
+  --color-accent-400: #78716c;
+  --color-accent-500: #57534e;
+  --color-accent-600: #44403c;
+  --color-accent-700: #292524;
+  --color-accent-800: #1c1917;
+  --color-accent-900: #19171c;
+  --color-accent-950: #0c0a09;
+
+  /* Partner hue — Jitter accent: indigo-violet, used once per screen at most. */
+  --color-coral-100: #eae8fd;
+  --color-coral-500: #6d64f0;
+  --color-coral-600: #574bd9;
+
+  /* Accent soft tint — chips, badges, icon tiles, focus ring. */
+  --color-accent-soft: rgba(25, 23, 28, 0.06);
+
+  /* Text on accent fills (accent is the near-black ink pill → white text). */
+  --color-on-accent: #fafaf9;
+
+  /* Semantic. */
+  --color-up: #2c7a62;
+  --color-down: #c0453c;
+  --color-warn: #b77a16;
+
+  /* Radius tiers. */
+  --radius-xs: 0.25rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+
+  /* Whisper shadows tinted toward ink. */
+  --shadow-xs: 0 1px 2px 0 rgb(15 35 34 / 0.04);
+  --shadow-sm: 0 1px 2px 0 rgb(15 35 34 / 0.05), 0 1px 3px 0 rgb(15 35 34 / 0.05);
+  --shadow-md: 0 2px 4px -1px rgb(15 35 34 / 0.06), 0 4px 8px -2px rgb(15 35 34 / 0.06);
+  --shadow-lg: 0 4px 8px -2px rgb(15 35 34 / 0.07), 0 10px 20px -4px rgb(15 35 34 / 0.08);
+
+  /* Micro-motion. */
+  --animate-page-in: page-in 0.4s cubic-bezier(0.21, 0.6, 0.35, 1) both;
+  --animate-rise: rise 0.7s cubic-bezier(0.16, 0.84, 0.44, 1) both;
+  --animate-fade: fade 0.5s ease-out both;
+  --animate-glow: glow 3s ease-in-out infinite;
+  --animate-shimmer: shimmer 2.5s linear infinite;
+
+  @keyframes page-in {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes fade {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes glow {
+    0%,
+    100% {
+      opacity: 0.5;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+  @keyframes shimmer {
+    to {
+      transform: translateX(100%);
+    }
+  }
+}
+
+html,
+body {
+  overflow-x: clip;
+}
+
+html {
+  font-family: var(--font-sans);
+  background-color: var(--color-page);
+}
+
+::selection {
+  background-color: var(--color-accent-100);
+  color: var(--color-accent-900);
+}
+
+/* Small caps kicker above page titles. */
+.label-caps {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+.text-signal {
+  color: var(--color-accent-700);
+}
+.dark .text-signal {
+  color: var(--color-accent-400);
+}
+
+/* Soft fade-and-rise on route content. */
+@media (prefers-reduced-motion: no-preference) {
+  .page-in {
+    animation: var(--animate-page-in);
+  }
+  .rise {
+    animation: var(--animate-rise);
+  }
+  .fade {
+    animation: var(--animate-fade);
+  }
+  .glow {
+    animation: var(--animate-glow);
+  }
+  .shimmer {
+    animation: var(--animate-shimmer);
+  }
+
+  /* Stagger delay utilities — apply `.rise` to children with `.stagger-1..6`. */
+  .stagger-1 {
+    animation-delay: 0.08s;
+  }
+  .stagger-2 {
+    animation-delay: 0.16s;
+  }
+  .stagger-3 {
+    animation-delay: 0.24s;
+  }
+  .stagger-4 {
+    animation-delay: 0.32s;
+  }
+  .stagger-5 {
+    animation-delay: 0.4s;
+  }
+  .stagger-6 {
+    animation-delay: 0.48s;
+  }
+}
+
+/* Scroll reveal — hidden until `.is-visible` is added by the IntersectionObserver
+ * mounted in __root.tsx (no scroll listeners). Visible by default when reduced
+ * motion is preferred or the observer never runs, so content is never lost. */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+      opacity 0.7s cubic-bezier(0.16, 0.84, 0.44, 1),
+      transform 0.7s cubic-bezier(0.16, 0.84, 0.44, 1);
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ── Dark theme token overrides ────────────────────────────────────
+ * Applied when `.dark` is on <html> (see ThemeToggle + the bootstrap script
+ * in __root.tsx). Linear/Vercel-style: near-pure black page, white text,
+ * the primary action flips to a white pill. One restrained violet glow. */
+.dark {
+  --color-page: #000000;
+  --color-panel: #0c0c0e;
+  --color-panel-2: #141416;
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-border-strong: rgba(255, 255, 255, 0.16);
+
+  --color-ink-1: #f5f5f4;
+  --color-ink-2: #d6d3d1;
+  --color-ink-3: #a8a29e;
+
+  --color-neutral-50: #141416;
+  --color-neutral-100: #1c1c1f;
+  --color-neutral-200: #2a2a2e;
+  --color-neutral-300: #44403c;
+  --color-neutral-400: #78716c;
+  --color-neutral-500: #a8a29e;
+  --color-neutral-600: #d6d3d1;
+  --color-neutral-700: #e7e5e4;
+  --color-neutral-800: #f5f5f4;
+  --color-neutral-900: #fafaf9;
+  --color-neutral-950: #ffffff;
+
+  /* Accent — near-white ramp (the dark primary action is the white pill). */
+  --color-accent-50: #1c1c1f;
+  --color-accent-100: #2a2a2e;
+  --color-accent-200: #44403c;
+  --color-accent-300: #78716c;
+  --color-accent-400: #a8a29e;
+  --color-accent-500: #d6d3d1;
+  --color-accent-600: #e7e5e4;
+  --color-accent-700: #f5f5f4;
+  --color-accent-800: #fafaf9;
+  --color-accent-900: #ffffff;
+  --color-accent-950: #ffffff;
+
+  --color-accent-soft: rgba(255, 255, 255, 0.08);
+  --color-on-accent: #0c0a09;
+
+  /* Partner hue — indigo lifted for dark contrast. */
+  --color-coral-100: #2a2750;
+  --color-coral-500: #8b84f7;
+  --color-coral-600: #a5a0fa;
+
+  /* Semantic — brighter so status colors hold contrast. */
+  --color-up: #4fae90;
+  --color-down: #e06c62;
+  --color-warn: #d9a144;
+
+  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.35), 0 1px 3px 0 rgb(0 0 0 / 0.35);
+  --shadow-md: 0 2px 4px -1px rgb(0 0 0 / 0.4), 0 4px 8px -2px rgb(0 0 0 / 0.4);
+  --shadow-lg: 0 4px 8px -2px rgb(0 0 0 / 0.45), 0 10px 20px -4px rgb(0 0 0 / 0.45);
+}
+
+.dark ::selection {
+  background-color: var(--color-accent-200);
+  color: var(--color-accent-950);
+}
+
+/* ── Marketing hero surface (`.hero-band`) ───────────────────────
+ * Public pages wrap their hero + bottom CTA in `.hero-band`. Tokens flip with
+ * `.dark`: light = warm white with ink text + ink pill CTA (Jitter), dark =
+ * pure black with white text + white pill CTA (Linear). */
+.hero-band {
+  --hb-bg: #fafaf9;
+  --hb-panel: rgba(25, 23, 28, 0.04);
+  --hb-border: rgba(25, 23, 28, 0.1);
+  --hb-ink-1: #19171c;
+  --hb-ink-2: #57534e;
+  --hb-ink-3: #a8a29e;
+  --hb-cta-bg: #19171c;
+  --hb-cta-ink: #fafaf9;
+  --hb-glow-a: rgba(109, 100, 240, 0.14);
+  --hb-glow-b: rgba(109, 100, 240, 0.08);
+  background-color: var(--hb-bg);
+  color: var(--hb-ink-1);
+}
+.dark .hero-band {
+  --hb-bg: #000000;
+  --hb-panel: rgba(255, 255, 255, 0.04);
+  --hb-border: rgba(255, 255, 255, 0.1);
+  --hb-ink-1: #f5f5f4;
+  --hb-ink-2: #d6d3d1;
+  --hb-ink-3: #78716c;
+  --hb-cta-bg: #f5f5f4;
+  --hb-cta-ink: #0c0a09;
+  --hb-glow-a: rgba(139, 132, 247, 0.22);
+  --hb-glow-b: rgba(139, 132, 247, 0.1);
+}
+.hero-band .hb-panel {
+  background-color: var(--hb-panel);
+}
+.hero-band .hb-border {
+  border-color: var(--hb-border);
+}
+.hero-band .hb-ink-1 {
+  color: var(--hb-ink-1);
+}
+.hero-band .hb-ink-2 {
+  color: var(--hb-ink-2);
+}
+.hero-band .hb-ink-3 {
+  color: var(--hb-ink-3);
+}
+.hero-band .hb-cta {
+  background-color: var(--hb-cta-bg);
+  color: var(--hb-cta-ink);
+}
+.hero-band .hb-cta:hover {
+  opacity: 0.88;
+}
+.hero-band .hb-ghost {
+  border-color: var(--hb-border);
+  color: var(--hb-ink-1);
+}
+.hero-band .hb-ghost:hover {
+  background-color: var(--hb-panel);
+}
+
+/* ── Blog post body (rendered markdown) ────────────────────────── */
+.post-body {
+  color: var(--color-ink-2);
+  font-size: 0.9375rem;
+  line-height: 1.75;
+}
+.post-body > * + * {
+  margin-top: 1.25em;
+}
+.post-body h2 {
+  color: var(--color-ink-1);
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-top: 2em;
+}
+.post-body h3 {
+  color: var(--color-ink-1);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-top: 1.75em;
+}
+.post-body a {
+  color: var(--color-accent-700);
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-color: var(--color-accent-200);
+  text-underline-offset: 2px;
+}
+.post-body a:hover {
+  color: var(--color-accent-800);
+}
+.post-body ul,
+.post-body ol {
+  padding-left: 1.5em;
+}
+.post-body ul {
+  list-style: disc;
+}
+.post-body ol {
+  list-style: decimal;
+}
+.post-body li + li {
+  margin-top: 0.375em;
+}
+.post-body code {
+  background: var(--color-panel-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xs);
+  font-size: 0.8125em;
+  padding: 0.15em 0.4em;
+}
+.post-body pre {
+  background: var(--color-neutral-950);
+  border-radius: var(--radius-lg);
+  color: var(--color-neutral-100);
+  overflow-x: auto;
+  padding: 1em 1.25em;
+}
+.post-body pre code {
+  background: none;
+  border: none;
+  font-size: 0.8125rem;
+  padding: 0;
+}
+.post-body blockquote {
+  border-left: 3px solid var(--color-accent-200);
+  color: var(--color-ink-3);
+  padding-left: 1em;
+}
+.post-body hr {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: 2em 0;
+}
+.post-body strong {
+  color: var(--color-ink-1);
+  font-weight: 600;
+}

@@ -1,0 +1,68 @@
+{
+  "name": "@sextant/saas",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#/*": "./src/*"
+  },
+  "scripts": {
+    "dev": "vite dev --port 3000",
+    "predev": "node scripts/generate-commits.mjs",
+    "generate-routes": "vite build",
+    "generate:commits": "node scripts/generate-commits.mjs",
+    "prebuild": "node scripts/generate-commits.mjs",
+    "build": "vite build",
+    "check": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
+    "preview": "vite preview",
+    "deploy": "wrangler deploy",
+    "db:generate": "drizzle-kit generate",
+    "generate:og": "node scripts/generate-og.mjs",
+    "db:migrate:local": "wrangler d1 migrations apply DB --local",
+    "db:migrate:remote": "wrangler d1 migrations apply DB --remote"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
+    "@sextant/analytics": "workspace:*",
+    "@sextant/email": "workspace:*",
+    "@sextant/seo": "workspace:*",
+    "@tanstack/react-query": "^5.107.1",
+    "@tanstack/react-router": "1.170.46",
+    "@tanstack/react-start": "1.169.5",
+    "better-auth": "^1.7.23",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "drizzle-orm": "^0.45.4",
+    "hono": "^4.13.18",
+    "lucide-react": "^0.562.0",
+    "marked": "^18.2.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-hook-form": "^7.68.0",
+    "stripe": "^23.1.0",
+    "tailwind-merge": "^3.4.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.69.1",
+    "@cloudflare/workers-types": "^5.20261114.1",
+    "@tailwindcss/vite": "^4.3.5",
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^6.0.1",
+    "drizzle-kit": "^0.31.11",
+    "tailwindcss": "^4.3.5",
+    "typescript": "^6.0.2",
+    "vite": "^8.0.0",
+    "wrangler": "^4.162.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "lightningcss",
+      "sharp",
+      "workerd"
+    ]
+  }
+}

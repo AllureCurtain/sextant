@@ -1,0 +1,30 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base title="Search" description="Search this site." path="/search">
+  <p class="label-caps text-signal">Search</p>
+  <h1 class="display-type mt-3 text-4xl font-medium text-ink sm:text-5xl">Search the site</h1>
+  <p class="mt-4 max-w-2xl text-ink-2">
+    Powered by{" "}
+    <a
+      class="text-ink-2 underline decoration-border-strong underline-offset-2 transition-colors hover:text-signal hover:decoration-signal"
+      href="https://pagefind.app"
+    >
+      Pagefind
+    </a>
+    . The index is generated at build time, so search runs entirely in your browser.
+  </p>
+  <div
+    id="search"
+    class="mt-8 rounded-xl border border-border bg-paper-raised p-4 shadow-xs sm:p-6"
+  ></div>
+  <link href="/pagefind/pagefind-ui.css" rel="stylesheet" />
+  <script src="/pagefind/pagefind-ui.js" is:inline></script>
+  <script is:inline>
+    window.addEventListener("DOMContentLoaded", () => {
+      // @ts-ignore — Pagefind UI is loaded from /pagefind
+      new PagefindUI({ element: "#search", showSubResults: true });
+    });
+  </script>
+</Base>
