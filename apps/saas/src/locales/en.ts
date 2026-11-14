@@ -13,7 +13,6 @@ export const en = {
     pricing: "Pricing",
     login: "Log in",
     getStarted: "Get started",
-    language: "Language",
   },
   home: {
     hero: {
