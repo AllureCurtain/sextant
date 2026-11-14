@@ -108,7 +108,7 @@ Never bypass checks. CI runs the same gates.
 
 ## Hard rules
 
-- All English: docs, code comments, commit messages, branch names, UI copy. No Chinese in the repo.
+- All English: docs, code comments, commit messages, branch names, UI copy. No Chinese in the repo. Conversation with the agent may be in Chinese; the written artifacts stay English.
 - Never commit secrets. New environment variables go in `.dev.vars.example` in the same change.
 - Money and credits are always integers in minor units (cents; 1 credit = 1 unit), never floating point.
 - API contract first: Zod schemas + a routes table before handlers. No undocumented endpoint in the SaaS app.

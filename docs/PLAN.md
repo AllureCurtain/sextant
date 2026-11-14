@@ -121,7 +121,7 @@ sextant/
 ## 10. Constraints
 
 - TypeScript, strict mode, no `any` in new code unless a library forces it (note it in a comment).
-- All English: UI strings, docs, code comments, commit messages, and branch names are in English. No Chinese in the repo.
+- All English: UI strings, docs, code comments, commit messages, and branch names are in English. No Chinese in the repo. Conversation with the agent may be in Chinese; the written artifacts stay English.
 - No secrets, tokens, or private keys in the repo, in any file, at any time.
 - Money and credits are always integers in minor units (cents; 1 credit = 1 unit), never floating point.
 - API contract first: Zod schemas + a routes table before handlers. No undocumented endpoint in the SaaS app.
