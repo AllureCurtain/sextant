@@ -108,15 +108,17 @@ after verification; no `sk_*`/`whsec_*` values exist anywhere in the repo.
 
 ## Known limitations / intentionally not done
 
-- **Deploys verified on a real account.** Both apps were deployed to
-  `*.workers.dev` and returned 200 on all generated pages. To deploy to your
-  own account: run `wrangler login` (or set `CLOUDFLARE_API_TOKEN`), create the
-  D1 database (`wrangler d1 create sextant-saas`) and paste the printed id into
-  the `database_id` placeholder in `apps/saas/wrangler.jsonc`, set
-  `PUBLIC_SITE_URL` there and for the content build, then run
-  `pnpm deploy:content` / `pnpm deploy:saas` and
-  `wrangler d1 migrations apply DB --remote`. CI's post-deploy `verify-url`
-  step asserts 200.
+- **Deploys verified on a real account, green in CI on push to `main`.**
+  - Content: `https://sextant-content.alluresocina.workers.dev`
+  - SaaS: `https://sextant-saas.alluresocina.workers.dev`
+
+  To deploy to your own account: run `wrangler login` (or set
+  `CLOUDFLARE_API_TOKEN`), create the D1 database (`wrangler d1 create
+sextant-saas`) and paste the printed id into the `database_id` placeholder in
+  `apps/saas/wrangler.jsonc`, set `PUBLIC_SITE_URL` there and for the content
+  build, then run `pnpm deploy:content` / `pnpm deploy:saas` and `wrangler d1
+migrations apply DB --remote`. CI's post-deploy `verify-url` step asserts 200.
+
 - **Stripe test mode verified live.** The full checkout → webhook →
   entitlement → credits path was exercised against real test-mode keys; see the
   Stripe verification section below. The billing portal is wired the same way
