@@ -1,6 +1,6 @@
 ---
 import Base from "../../../layouts/Base.astro";
-import { articleLd, canonical } from "../../../lib/geo";
+import { articleLd, canonical, questionPath } from "../../../lib/geo";
 import { KEYWORDS, type KeywordRow } from "../../../data/keywords";
 
 export function getStaticPaths() {
@@ -13,6 +13,11 @@ interface Props {
 
 const { row } = Astro.props;
 const title = `${row.keyword}: Overview`;
+
+// First three Q&A entries shown inline as a preview; the full set lives on the
+// questions index. Related topics are every other keyword, stable order.
+const previewFaq = row.faq.slice(0, 3);
+const related = KEYWORDS.filter((k) => k.slug !== row.slug);
 ---
 
 <Base
@@ -51,6 +56,52 @@ const title = `${row.keyword}: Overview`;
         </span>
       </a>
     </div>
+
+    {/* Inline Q&A preview — top of the funnel content so the first screen is
+        substantive rather than a lone paragraph plus a button. */}
+    <section class="mt-14">
+      <h2 class="display-type text-2xl font-medium text-ink sm:text-3xl">
+        Quick answers about {row.keyword}
+      </h2>
+      <dl class="mt-6 space-y-6">
+        {previewFaq.map((entry) => (
+          <div class="border-b border-border pb-6 last:border-b-0">
+            <dt class="text-base font-medium text-ink">
+              <a
+                class="transition-colors hover:text-signal"
+                href={questionPath(row, entry.question)}
+              >
+                {entry.question}
+              </a>
+            </dt>
+            <dd class="mt-2 max-w-2xl text-[15px] leading-relaxed text-ink-2">{entry.answer}</dd>
+          </div>
+        ))}
+      </dl>
+      <a
+        href={`/keywords/${row.slug}/questions`}
+        class="mt-2 inline-block text-sm font-medium text-signal transition-colors hover:underline"
+      >
+        See all {row.faq.length} questions →
+      </a>
+    </section>
+
+    {/* Related topics — internal links for the reader and for crawl depth. */}
+    <section class="mt-14 border-t border-border pt-10">
+      <h2 class="label-caps text-signal">Related topics</h2>
+      <ul class="mt-5 flex flex-wrap gap-2.5">
+        {related.map((k) => (
+          <li>
+            <a
+              href={`/keywords/${k.slug}`}
+              class="inline-block rounded-full border border-border bg-paper-raised px-3.5 py-1.5 text-sm text-ink-2 transition-all duration-150 hover:-translate-y-px hover:border-signal hover:text-signal hover:shadow-sm"
+            >
+              {k.keyword}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
 
     <script
       type="application/ld+json"
