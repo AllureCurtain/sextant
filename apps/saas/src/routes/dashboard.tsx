@@ -3,7 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Sparkles, CreditCard, KeyRound, FileUp, Settings, ArrowRight } from "lucide-react";
 import { authClient } from "#/lib/auth-client";
-import { useEntitlement, useUsageEvents } from "#/lib/api";
+import { useEntitlement, useUsageEvents, useSessionQuery } from "#/lib/api";
 import { AppShell } from "#/components/app-shell";
 import { Button } from "#/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "#/components/ui/card";
@@ -20,12 +20,53 @@ function KpiTile({ label, value, hint }: { label: string; value: string; hint?: 
   );
 }
 
+/**
+ * Tiny credit-usage bar sparkline for the freed KPI slot. Renders the last N
+ * usage events as proportional bars — pure divs, no chart dependency. Fills
+ * the fourth KPI cell now that Plan and Status are merged.
+ */
+function UsageSparkline({
+  events,
+  loading,
+}: {
+  events: { creditsUsed: number; createdAt: number }[];
+  loading: boolean;
+}) {
+  const recent = events.slice(-14);
+  const max = Math.max(1, ...recent.map((e) => e.creditsUsed));
+  return (
+    <div className="rounded-xl border border-border bg-panel p-5 shadow-xs">
+      <p className="text-xs font-medium tracking-wide text-ink-3 uppercase">Usage</p>
+      {loading ? (
+        <p className="mt-2 text-xs text-ink-3">Loading…</p>
+      ) : recent.length === 0 ? (
+        <p className="mt-2 text-xs text-ink-3">No usage yet</p>
+      ) : (
+        <>
+          <div className="mt-2 flex h-8 items-end gap-0.5" aria-hidden="true">
+            {recent.map((e, i) => (
+              <span
+                key={i}
+                className="flex-1 rounded-sm bg-accent-500/80"
+                style={{ height: `${Math.max(8, (e.creditsUsed / max) * 100)}%` }}
+              />
+            ))}
+          </div>
+          <p className="mt-1 text-xs text-ink-3">Last {recent.length} actions</p>
+        </>
+      )}
+    </div>
+  );
+}
+
 function Dashboard() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { data: session, isPending } = authClient.useSession();
   const { data: entitlement, refetch } = useEntitlement();
   const { data: usageData, isLoading: usageLoading } = useUsageEvents();
+  const { data: sessionInfo } = useSessionQuery();
+  const isAdmin = sessionInfo?.isAdmin ?? false;
   const [busy, setBusy] = useState<"consume" | "portal" | null>(null);
   const [message, setMessage] = useState<string | null>(null);
 
@@ -84,20 +125,21 @@ function Dashboard() {
   const totalUsed = events.reduce((s, e) => s + e.creditsUsed, 0);
 
   return (
-    <AppShell active="dashboard" title="Dashboard" email={session.user.email}>
+    <AppShell active="dashboard" title="Dashboard" email={session.user.email} isAdmin={isAdmin}>
       <div className="grid gap-4 sm:grid-cols-4">
         <KpiTile label="Credits" value={String(credits)} hint="Remaining this cycle" />
+        {/* Plan and status were two tiles saying the same thing — merged. */}
         <KpiTile
           label="Plan"
           value={plan === "pro" ? "Pro" : "Free"}
-          hint={plan === "pro" ? "Active subscription" : "Upgrade for more"}
+          hint={plan === "pro" ? `Active · ${entitlement?.status ?? "active"}` : "Upgrade for more"}
         />
-        <KpiTile label="Status" value={entitlement?.status ?? "free"} hint="Entitlement status" />
         <KpiTile
           label="Account"
           value={session.user.emailVerified ? "Verified" : "Pending"}
           hint="Email verification"
         />
+        <UsageSparkline events={usageData?.events ?? []} loading={usageLoading} />
       </div>
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2">
