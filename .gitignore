@@ -16,6 +16,9 @@ coverage/
 playwright-report/
 test-results/
 *.gen.ts
+# TanStack Router's generated route tree is committed (official recommendation
+# for file-based routing) so `tsc --noEmit` typechecks without a build first.
+!apps/saas/src/routeTree.gen.ts
 !tsconfig.node.json
 
 # finesse build log — local rotation memory
